@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <title>robotfindskitten</title>
+    <script src="rfk.js"></script>
+    <script type="text/javascript">
+      function loaded() {
+        document.getElementById("nki").innerHtml = rfk.nonKittenItems.randomItem();   
+      }
+    </script>
+  </head>
+  <body onload="loaded()">
+    <canvas id="rfk" width="100%" height="100%">
+      I'm sorry, but your browser does not support the latest HTML5 features
+      required for this website.
+    </canvas>
+    <div id="nki"></div>
+  </body>
+</html>
