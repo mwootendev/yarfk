@@ -1,4 +1,4 @@
-rfk = rfk || {};
+var rfk = rfk || {};
 
 rfk.nonKittenItems = [
 "\"I pity the fool who mistakes me for kitten!\", sez Mr. T.",
@@ -409,6 +409,7 @@ rfk.nonKittenItems = [
 "The spectre of Sherlock Holmes wills you onwards."
 ];
 
-rfk.nonKittenItems.prototype.randomItem = function() {
-  return this[Math.floor(Math.random()*this.length)];
+rfk.nonKittenItems.randomItem = function() {
+  var nki = this[Math.floor(Math.random()*this.length)];
+  return nki;
 };

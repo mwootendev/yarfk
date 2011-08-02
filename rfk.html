@@ -5,7 +5,8 @@
     <script src="rfk.js"></script>
     <script type="text/javascript">
       function loaded() {
-        document.getElementById("nki").innerHtml = rfk.nonKittenItems.randomItem();   
+        var nki = rfk.nonKittenItems.randomItem();
+        document.getElementById("nki").innerHTML = nki;   
       }
     </script>
   </head>
