@@ -414,13 +414,34 @@ rfk.nonKittenItems.randomItem = function() {
   return nki;
 };
 
+rfk.nkis = [];
+
+rfk.NKI_COUNT = 30;
+rfk.FONT_SIZE = 12;
+
 rfk.init = function(canvas, nkiElement) {
    this.canvas = canvas;
    this.context = canvas.getContext("2d");
    this.nkiElement = nkiElement;
    
    this.resetCanvas();
-   this.displayNki(this.nonKittenItems.randomItem());
+   this.nkis.init();
+   this.drawNkis();
+   
+   // this.displayNki(this.nonKittenItems.randomItem());
+};
+
+rfk.randomCharacter = function() {
+  var exclamationIndex = "!".charCodeAt(0);
+  return String.fromCharCode(Math.floor(Math.random() * ((126 - exclamationIndex + 1)) + exclamationIndex));    
+};
+
+rfk.randomX = function() {
+  return Math.floor(Math.random() * (this.canvas.width / this.FONT_SIZE));    
+};
+
+rfk.randomY = function() {
+  return Math.floor(Math.random() * (this.canvas.height / this.FONT_SIZE));
 };
 
 rfk.displayNki = function(nki) {
@@ -435,3 +456,44 @@ rfk.resetCanvas = function() {
   
   this.context.restore();
 };
+
+rfk.drawNkis = function() {
+  this.context.save();
+  
+  this.context.font = rfk.FONT_SIZE + "pt monospace";
+  this.context.textBaseline = "top";
+  
+  for (var i = 0; i < this.nkis.length; i++) {
+    
+    var nki = this.nkis[i];
+    
+    this.context.fillStyle = nki.color;
+    this.context.fillText(nki.character, nki.x * rfk.FONT_SIZE, nki.y * rfk.FONT_SIZE);    
+  }
+  
+  this.context.restore();
+};
+
+rfk.nkis.init = function() {
+  
+  var seen = [];
+  
+  for (nkiCount = 0; nkiCount < rfk.NKI_COUNT; nkiCount++)
+  {
+    var x = rfk.randomX();
+    var y = rfk.randomY();
+      
+    if (!seen[y])
+    {
+      seen[y] = [];    
+    }
+    
+    while (seen[y][x])
+    {
+      x = rfk.randomX();   
+    }
+    
+    this.push({ "character" : rfk.randomCharacter(), "color" : "white", "x" : x, "y" : y});
+  }  
+};
+
