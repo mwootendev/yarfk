@@ -2,16 +2,16 @@
 <html>
   <head>
     <title>robotfindskitten</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script src="rfk.js"></script>
     <script type="text/javascript">
-      function loaded() {
-        var nki = rfk.nonKittenItems.randomItem();
-        document.getElementById("nki").innerHTML = nki;   
-      }
+      $(document).ready(function () {
+        rfk.init($("#rfk").get(0), $("#nki").get(0));  
+      });
     </script>
   </head>
   <body onload="loaded()">
-    <canvas id="rfk" width="100%" height="100%">
+    <canvas id="rfk" width="800" height="600">
       I'm sorry, but your browser does not support the latest HTML5 features
       required for this website.
     </canvas>

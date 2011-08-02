@@ -413,3 +413,25 @@ rfk.nonKittenItems.randomItem = function() {
   var nki = this[Math.floor(Math.random()*this.length)];
   return nki;
 };
+
+rfk.init = function(canvas, nkiElement) {
+   this.canvas = canvas;
+   this.context = canvas.getContext("2d");
+   this.nkiElement = nkiElement;
+   
+   this.resetCanvas();
+   this.displayNki(this.nonKittenItems.randomItem());
+};
+
+rfk.displayNki = function(nki) {
+  $(this.nkiElement).html(nki);
+};
+
+rfk.resetCanvas = function() {
+  this.context.save();
+  
+  this.context.fillColor = "black";
+  this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  
+  this.context.restore();
+};
