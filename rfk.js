@@ -416,7 +416,7 @@ rfk.nonKittenItems.randomItem = function() {
 
 rfk.nkis = [];
 
-rfk.NKI_COUNT = 30;
+rfk.NKI_COUNT = 20;
 rfk.FONT_SIZE = 12;
 
 rfk.init = function(canvas, nkiElement) {
@@ -434,6 +434,11 @@ rfk.init = function(canvas, nkiElement) {
 rfk.randomCharacter = function() {
   var exclamationIndex = "!".charCodeAt(0);
   return String.fromCharCode(Math.floor(Math.random() * ((126 - exclamationIndex + 1)) + exclamationIndex));    
+};
+
+rfk.randomColor = function() {
+  var COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan"];
+  return COLORS[Math.floor(Math.random() * COLORS.length)];
 };
 
 rfk.randomX = function() {
@@ -493,7 +498,7 @@ rfk.nkis.init = function() {
       x = rfk.randomX();   
     }
     
-    this.push({ "character" : rfk.randomCharacter(), "color" : "white", "x" : x, "y" : y});
+    this.push({ "character" : rfk.randomCharacter(), "color" : rfk.randomColor(), "x" : x, "y" : y});
   }  
 };
 
