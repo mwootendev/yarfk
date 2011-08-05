@@ -415,6 +415,7 @@ rfk.nonKittenItems.randomItem = function() {
 };
 
 rfk.nkis = [];
+rfk.robot = {"character" : "#", "color" : "grey", "x" : 0, "y" : 0};
 
 rfk.NKI_COUNT = 20;
 rfk.FONT_SIZE = 12;
@@ -427,6 +428,9 @@ rfk.init = function(canvas, nkiElement) {
    this.resetCanvas();
    this.nkis.init();
    this.drawNkis();
+   
+   this.robot.init();
+   this.drawScreenItem(this.robot);
    
    // this.displayNki(this.nonKittenItems.randomItem());
 };
@@ -463,42 +467,56 @@ rfk.resetCanvas = function() {
 };
 
 rfk.drawNkis = function() {
+  
+  for (var y in this.nkis) {
+    
+    for (var x in this.nkis[y]) {
+      rfk.drawScreenItem(this.nkis[y][x]);  
+    }
+  }
+};
+
+rfk.drawScreenItem = function(screenItem) {
   this.context.save();
   
   this.context.font = rfk.FONT_SIZE + "pt monospace";
   this.context.textBaseline = "top";
   
-  for (var i = 0; i < this.nkis.length; i++) {
-    
-    var nki = this.nkis[i];
-    
-    this.context.fillStyle = nki.color;
-    this.context.fillText(nki.character, nki.x * rfk.FONT_SIZE, nki.y * rfk.FONT_SIZE);    
-  }
+  this.context.fillStyle = screenItem.color;
+  this.context.fillText(screenItem.character, screenItem.x * rfk.FONT_SIZE, screenItem.y * rfk.FONT_SIZE);
   
   this.context.restore();
 };
 
 rfk.nkis.init = function() {
-  
-  var seen = [];
-  
+      
   for (nkiCount = 0; nkiCount < rfk.NKI_COUNT; nkiCount++)
   {
     var x = rfk.randomX();
     var y = rfk.randomY();
       
-    if (!seen[y])
+    if (!this[y])
     {
-      seen[y] = [];    
+      this[y] = [];    
     }
     
-    while (seen[y][x])
+    while (this[y][x])
     {
       x = rfk.randomX();   
     }
     
-    this.push({ "character" : rfk.randomCharacter(), "color" : rfk.randomColor(), "x" : x, "y" : y});
+    this[y][x] ={ "character" : rfk.randomCharacter(), "color" : rfk.randomColor(), "x" : x, "y" : y};
   }  
+};
+
+rfk.robot.init = function() {
+  this.x = rfk.randomX();
+  this.y = rfk.randomY();
+  
+  while (rfk.nkis[this.y][this.x])
+  {
+      this.x = rfk.randomX();
+      this.y = rfk.randomY();
+  }
 };
 
