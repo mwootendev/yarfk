@@ -454,7 +454,7 @@ rfk.randomY = function() {
 };
 
 rfk.displayNki = function(nki) {
-  $(this.nkiElement).html(nki);
+  this.nkiElement.innerHtml = nki;
 };
 
 rfk.resetCanvas = function() {
@@ -469,9 +469,12 @@ rfk.resetCanvas = function() {
 rfk.drawNkis = function() {
   
   for (var y in this.nkis) {
-    
-    for (var x in this.nkis[y]) {
-      rfk.drawScreenItem(this.nkis[y][x]);  
+    if (this.nkis.hasOwnProperty(y)) {
+      for (var x in this.nkis[y]) {
+        if (this.nkis[y].hasOwnProperty(x)) {
+           rfk.drawScreenItem(this.nkis[y][x]);
+        }
+      }
     }
   }
 };
@@ -490,7 +493,7 @@ rfk.drawScreenItem = function(screenItem) {
 
 rfk.nkis.init = function() {
       
-  for (nkiCount = 0; nkiCount < rfk.NKI_COUNT; nkiCount++)
+  for (var nkiCount = 0; nkiCount < rfk.NKI_COUNT; nkiCount++)
   {
     var x = rfk.randomX();
     var y = rfk.randomY();
