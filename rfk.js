@@ -435,6 +435,7 @@ var robotfindskitten = function(rfk, global) {
   
   rfk.NKI_COUNT = 20;
   rfk.FONT_SIZE = 12;
+  rfk.BACKGROUND_COLOR = "black";
   
   rfk.init = function(canvas, nkiElement) {
      this.canvas = canvas;
@@ -447,11 +448,22 @@ var robotfindskitten = function(rfk, global) {
      
      this.robot.init();
      this.drawScreenItem(this.robot);
+     
+     this.kitten.init();
+     this.drawScreenItem(this.kitten);
   };
   
   rfk.randomCharacter = function() {
     var exclamationIndex = "!".charCodeAt(0);
     return String.fromCharCode(Math.floor(Math.random() * ((126 - exclamationIndex + 1)) + exclamationIndex));    
+  };
+  
+  rfk.getMaxX = function() {
+    return (this.canvas.width / this.FONT_SIZE);
+  };
+  
+  rfk.getMaxY = function() {
+    return (this.canvas.height / this.FONT_SIZE);  
   };
   
   rfk.randomColor = function() {
@@ -460,11 +472,11 @@ var robotfindskitten = function(rfk, global) {
   };
   
   rfk.randomX = function() {
-    return Math.floor(Math.random() * (this.canvas.width / this.FONT_SIZE));    
+    return Math.floor(Math.random() * this.getMaxX());    
   };
   
   rfk.randomY = function() {
-    return Math.floor(Math.random() * (this.canvas.height / this.FONT_SIZE));
+    return Math.floor(Math.random() * this.getMaxY());
   };
   
   rfk.displayNki = function(nki) {
@@ -474,7 +486,7 @@ var robotfindskitten = function(rfk, global) {
   rfk.resetCanvas = function() {
     this.context.save();
     
-    this.context.fillColor = "black";
+    this.context.fillColor = rfk.BACKGROUND_COLOR;
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     
     this.context.restore();
@@ -502,8 +514,22 @@ var robotfindskitten = function(rfk, global) {
     this.context.restore();
   };
   
+  rfk.clearScreenItem = function(screenItem) {
+    this.context.save();
+    
+    this.context.font = rfk.FONT_SIZE + "pt monospace";
+    this.context.textBaseline = "top";
+    
+    this.context.fillStyle = rfk.BACKGROUND_COLOR;
+    this.context.fillText(screenItem.character, screenItem.x * rfk.FONT_SIZE, screenItem.y * rfk.FONT_SIZE);
+    
+    this.context.restore();
+  };
+  
   rfk.nkis.init = function() {
-        
+
+    var usedNkis = [];
+
     for (nkiCount = 0; nkiCount < rfk.NKI_COUNT; nkiCount++)
     {
       var x = rfk.randomX();
@@ -518,8 +544,12 @@ var robotfindskitten = function(rfk, global) {
       {
         x = rfk.randomX();   
       }
-      
-      this[y][x] ={ "character" : rfk.randomCharacter(), "color" : rfk.randomColor(), "x" : x, "y" : y};
+           
+      this[y][x] = { "character" : rfk.randomCharacter(), 
+                     "color" : rfk.randomColor(), 
+                     "x" : x, 
+                     "y" : y,
+                     "text" : rfk.nonKittenItems.randomItem()};
     }  
   };
   
@@ -537,40 +567,65 @@ var robotfindskitten = function(rfk, global) {
   rfk.robot.handleKeyboardInput = function(event) {
     switch (event.keyCode) {
       case 38:  // Up arrow
-        rfk.robot.moveUp();
+        rfk.robot.move(0, -1);
         break;
    
       case 40:  // Down arrow
-        rfk.robot.moveDown();
+        rfk.robot.move(0, 1);
         break;
   
       case 37:  // Left arrow
-        rfk.robot.moveLeft();
+        rfk.robot.move(-1, 0);
         break;
   
       case 39:  // Right arrow
-       rfk.robot.moveRight();
+       rfk.robot.move(1, 0);
        break;
     }  
   };
   
-  rfk.robot.moveLeft = function() {
-    rfk.displayNki("Moving left");
+  rfk.robot.move = function(deltaX, deltaY) {
+    var newRobotX = this.x + deltaX;
+    var newRobotY = this.y + deltaY;
+    
+    if (((newRobotX >= 0) && (newRobotX <= rfk.getMaxX()))
+        && ((newRobotY >= 0) && (newRobotY < rfk.getMaxY())))
+    {      
+      if (rfk.nkis[newRobotY] && rfk.nkis[newRobotY][newRobotX])
+      {
+        rfk.displayNki(rfk.nkis[newRobotY][newRobotX].text);
+      }
+      else if ((rfk.kitten.x === newRobotX) && (rfk.kitten.y === newRobotY))
+      {
+          rfk.displayNki("You found kitten!!!!!");
+      }
+      else
+      {
+        rfk.clearScreenItem(this);
+        this.x = newRobotX;
+        this.y = newRobotY;
+        rfk.drawScreenItem(this);
+      }
+    }
   };
-  
-  rfk.robot.moveRight = function() {
-    rfk.displayNki("Moving right");  
-  };
-  
-  rfk.robot.moveUp = function() {
-    rfk.displayNki("Moving up");
-  };
-  
-  rfk.robot.moveDown = function() {
-    rfk.displayNki("Moving down");
-  };
-  
+   
   global.addEventListener("keydown", rfk.robot.handleKeyboardInput, true);
+  
+  rfk.kitten = {"character" : rfk.randomCharacter(), "color" : rfk.randomColor(), "x" : 0, "y" : 0};
+  
+  rfk.kitten.init = function() {
+    this.x = rfk.randomX();
+    this.y = rfk.randomY();
+
+
+
+    while ((rfk.nkis[this.y] && rfk.nkis[this.y][this.x]) || 
+           (rfk.robot.x === this.x && rfk.robot.y === this.y))
+    {
+      this.x = rfk.randomX();
+      this.y = rfk.randomY();
+    }
+  };
   
   return rfk;
 
