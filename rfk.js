@@ -437,11 +437,15 @@ var robotfindskitten = function(rfk, global) {
   rfk.FONT_SIZE = 12;
   rfk.BACKGROUND_COLOR = "black";
   
-  rfk.init = function(canvas, nkiElement) {
+  rfk.init = function init(canvas, nkiElement) {
      this.canvas = canvas;
      this.context = canvas.getContext("2d");
      this.nkiElement = nkiElement;
      
+     this.initializeGame();
+  };
+  
+  rfk.initializeGame = function initializeGame() {
      this.resetCanvas();
      this.nkis.init();
      this.drawNkis();
@@ -450,40 +454,40 @@ var robotfindskitten = function(rfk, global) {
      this.drawScreenItem(this.robot);
      
      this.kitten.init();
-     this.drawScreenItem(this.kitten);
+     this.drawScreenItem(this.kitten);      
   };
   
-  rfk.randomCharacter = function() {
+  rfk.randomCharacter = function randomCharacter() {
     var exclamationIndex = "!".charCodeAt(0);
     return String.fromCharCode(Math.floor(Math.random() * ((126 - exclamationIndex + 1)) + exclamationIndex));    
   };
   
-  rfk.getMaxX = function() {
+  rfk.getMaxX = function getMaxX() {
     return (this.canvas.width / this.FONT_SIZE);
   };
   
-  rfk.getMaxY = function() {
+  rfk.getMaxY = function getMaxY() {
     return (this.canvas.height / this.FONT_SIZE);  
   };
   
-  rfk.randomColor = function() {
+  rfk.randomColor = function randomColor() {
     var COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan"];
     return COLORS[Math.floor(Math.random() * COLORS.length)];
   };
   
-  rfk.randomX = function() {
+  rfk.randomX = function randomX() {
     return Math.floor(Math.random() * this.getMaxX());    
   };
   
-  rfk.randomY = function() {
+  rfk.randomY = function randomY() {
     return Math.floor(Math.random() * this.getMaxY());
   };
   
-  rfk.displayNki = function(nki) {
+  rfk.displayNki = function displayNki(nki) {
     this.nkiElement.innerHTML = nki;
   };
   
-  rfk.resetCanvas = function() {
+  rfk.resetCanvas = function resetCanvas() {
     this.context.save();
     
     this.context.fillColor = rfk.BACKGROUND_COLOR;
@@ -492,7 +496,7 @@ var robotfindskitten = function(rfk, global) {
     this.context.restore();
   };
   
-  rfk.drawNkis = function() {
+  rfk.drawNkis = function drawNkis() {
     
     for (var y in this.nkis) {
       
@@ -502,7 +506,7 @@ var robotfindskitten = function(rfk, global) {
     }
   };
   
-  rfk.drawScreenItem = function(screenItem) {
+  rfk.drawScreenItem = function drawScreenItem(screenItem) {
     this.context.save();
     
     this.context.font = rfk.FONT_SIZE + "pt monospace";
@@ -514,7 +518,7 @@ var robotfindskitten = function(rfk, global) {
     this.context.restore();
   };
   
-  rfk.clearScreenItem = function(screenItem) {
+  rfk.clearScreenItem = function clearScreenItem(screenItem) {
     this.context.save();
     
     this.context.font = rfk.FONT_SIZE + "pt monospace";
@@ -526,9 +530,10 @@ var robotfindskitten = function(rfk, global) {
     this.context.restore();
   };
   
-  rfk.nkis.init = function() {
+  rfk.nkis.init = function init() {
 
     var usedNkis = [];
+    this.length = 0; // Reset the array of NKIs
 
     for (nkiCount = 0; nkiCount < rfk.NKI_COUNT; nkiCount++)
     {
@@ -553,18 +558,7 @@ var robotfindskitten = function(rfk, global) {
     }  
   };
   
-  rfk.robot.init = function() {
-    this.x = rfk.randomX();
-    this.y = rfk.randomY();
-    
-    while (rfk.nkis[this.y] && rfk.nkis[this.y][this.x])
-    {
-        this.x = rfk.randomX();
-        this.y = rfk.randomY();
-    }
-  };
-  
-  rfk.robot.handleKeyboardInput = function(event) {
+  rfk.handleKeydown = function handleKeydown(event) {
     switch (event.keyCode) {
       case 38:  // Up arrow
         rfk.robot.move(0, -1);
@@ -579,17 +573,34 @@ var robotfindskitten = function(rfk, global) {
         break;
   
       case 39:  // Right arrow
-       rfk.robot.move(1, 0);
-       break;
+        rfk.robot.move(1, 0);
+        break;
     }  
   };
   
-  rfk.robot.move = function(deltaX, deltaY) {
+  rfk.handleKeyup = function handleKeyup(event) {
+    if (event.keyCode === 27) {
+        rfk.initializeGame();
+    }  
+  };
+  
+  rfk.robot.init = function init() {
+    this.x = rfk.randomX();
+    this.y = rfk.randomY();
+    
+    while (rfk.nkis[this.y] && rfk.nkis[this.y][this.x])
+    {
+        this.x = rfk.randomX();
+        this.y = rfk.randomY();
+    }
+  };
+    
+  rfk.robot.move = function move(deltaX, deltaY) {
     var newRobotX = this.x + deltaX;
     var newRobotY = this.y + deltaY;
     
-    if (((newRobotX >= 0) && (newRobotX <= rfk.getMaxX()))
-        && ((newRobotY >= 0) && (newRobotY < rfk.getMaxY())))
+    if (((newRobotX >= 0) && (newRobotX <= rfk.getMaxX())) && 
+       ((newRobotY >= 0) && (newRobotY < rfk.getMaxY())))
     {      
       if (rfk.nkis[newRobotY] && rfk.nkis[newRobotY][newRobotX])
       {
@@ -609,15 +620,14 @@ var robotfindskitten = function(rfk, global) {
     }
   };
    
-  global.addEventListener("keydown", rfk.robot.handleKeyboardInput, true);
+  global.addEventListener("keyup", rfk.handleKeyup, true);
+  global.addEventListener("keydown", rfk.handleKeydown, true);
   
   rfk.kitten = {"character" : rfk.randomCharacter(), "color" : rfk.randomColor(), "x" : 0, "y" : 0};
   
-  rfk.kitten.init = function() {
+  rfk.kitten.init = function init() {
     this.x = rfk.randomX();
     this.y = rfk.randomY();
-
-
 
     while ((rfk.nkis[this.y] && rfk.nkis[this.y][this.x]) || 
            (rfk.robot.x === this.x && rfk.robot.y === this.y))
