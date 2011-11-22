@@ -609,6 +609,9 @@ var robotfindskitten = function(rfk, global) {
       else if ((rfk.kitten.x === newRobotX) && (rfk.kitten.y === newRobotY))
       {
           rfk.displayNki("You found kitten!!!!!");
+          rfk.resetCanvas();
+          this.drawGraphic(5, (rfk.getMaxY() / 2) - 2);
+          rfk.kitten.drawGraphic(rfk.getMaxX() - 15, (rfk.getMaxY() / 2) - 2);
       }
       else
       {
@@ -618,6 +621,30 @@ var robotfindskitten = function(rfk, global) {
         rfk.drawScreenItem(this);
       }
     }
+  };
+  
+  rfk.robot.drawGraphic = function drawGraphic(x, y) {
+      
+      // [-]
+      rfk.drawScreenItem({"character" : "[", "color" : "blue", "x" : x, "y" : y});
+      rfk.drawScreenItem({"character" : "-", "color" : "cyan", "x" : x+1, "y" : y});
+      rfk.drawScreenItem({"character" : "]", "color" : "blue", "x" : x+2, "y" : y});
+      
+      // (+)=C
+      rfk.drawScreenItem({"character" : "(", "color" : "blue", "x" : x, "y" : y+1});
+      rfk.drawScreenItem({"character" : "+", "color" : "red", "x" : x+1, "y" : y+1});
+      rfk.drawScreenItem({"character" : ")", "color" : "blue", "x" : x+2, "y" : y+1});
+      rfk.drawScreenItem({"character" : "=", "color" : "cyan", "x" : x+3, "y" : y+1});
+      rfk.drawScreenItem({"character" : "C", "color" : "cyan", "x" : x+4, "y" : y+1});
+      
+      // | |
+      rfk.drawScreenItem({"character" : "|", "color" : "blue", "x" : x, "y" : y+2});
+      rfk.drawScreenItem({"character" : "|", "color" : "blue", "x" : x+2, "y" : y+2});
+      
+      // OOO
+      rfk.drawScreenItem({"character" : "O", "color" : "gray", "x" : x, "y" : y+3});
+      rfk.drawScreenItem({"character" : "O", "color" : "gray", "x" : x+1, "y" : y+3});
+      rfk.drawScreenItem({"character" : "O", "color" : "gray", "x" : x+2, "y" : y+3});
   };
    
   global.addEventListener("keyup", rfk.handleKeyup, true);
@@ -635,6 +662,45 @@ var robotfindskitten = function(rfk, global) {
       this.x = rfk.randomX();
       this.y = rfk.randomY();
     }
+  };
+  
+  rfk.kitten.drawGraphic = function drawGraphic(x, y) {
+      // |\_/|
+      rfk.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y});
+      rfk.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+2, "y" : y});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y});
+      rfk.drawScreenItem({"character" : "/", "color" : "orange", "x" : x+4, "y" : y});
+      rfk.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y});
+      
+      // |o o|__
+      rfk.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y+1});
+      rfk.drawScreenItem({"character" : "o", "color" : "green", "x" : x+2, "y" : y+1});
+      rfk.drawScreenItem({"character" : "o", "color" : "green", "x" : x+4, "y" : y+1});
+      rfk.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y+1});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+1});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+1});
+      
+      // =-*-=__\
+      rfk.drawScreenItem({"character" : "=", "color" : "white", "x" : x+1, "y" : y+2});
+      rfk.drawScreenItem({"character" : "-", "color" : "white", "x" : x+2, "y" : y+2});
+      rfk.drawScreenItem({"character" : "*", "color" : "red", "x" : x+3, "y" : y+2});
+      rfk.drawScreenItem({"character" : "-", "color" : "white", "x" : x+4, "y" : y+2});
+      rfk.drawScreenItem({"character" : "=", "color" : "white", "x" : x+5, "y" : y+2});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+2});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+2});
+      rfk.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+8, "y" : y+2});
+      
+      // c_c__(___)
+      rfk.drawScreenItem({"character" : "c", "color" : "orange", "x" : x, "y" : y+3});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+1, "y" : y+3});
+      rfk.drawScreenItem({"character" : "c", "color" : "orange", "x" : x+2, "y" : y+3});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y+3});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+4, "y" : y+3});
+      rfk.drawScreenItem({"character" : "(", "color" : "orange", "x" : x+5, "y" : y+3});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+3});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+3});
+      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+8, "y" : y+3});
+      rfk.drawScreenItem({"character" : ")", "color" : "orange", "x" : x+9, "y" : y+3});
   };
   
   return rfk;
