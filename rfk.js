@@ -609,9 +609,7 @@ var robotfindskitten = function(rfk, global) {
       else if ((rfk.kitten.x === newRobotX) && (rfk.kitten.y === newRobotY))
       {
           rfk.displayNki("You found kitten!!!!!");
-          rfk.resetCanvas();
-          this.drawGraphic(5, (rfk.getMaxY() / 2) - 2);
-          rfk.kitten.drawGraphic(rfk.getMaxX() - 15, (rfk.getMaxY() / 2) - 2);
+          rfk.playAnimation(0);
       }
       else
       {
@@ -621,6 +619,15 @@ var robotfindskitten = function(rfk, global) {
         rfk.drawScreenItem(this);
       }
     }
+  };
+  
+  rfk.playAnimation = function playAnimation(offset) {
+      if (offset !== 15) {
+        rfk.resetCanvas();
+        rfk.robot.drawGraphic(5 + offset, (rfk.getMaxY() / 2) - 2);
+        rfk.kitten.drawGraphic(rfk.getMaxX() - 15 - offset, (rfk.getMaxY() / 2) - 2);
+        setTimeout(function() { rfk.playAnimation(offset + 1); }, 250);
+      }
   };
   
   rfk.robot.drawGraphic = function drawGraphic(x, y) {
