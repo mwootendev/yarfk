@@ -1,0 +1,20 @@
+body {
+  background : black;    
+}
+
+#rfk {
+  border-width: 1px;
+  border-color: gray;
+  border-style: solid;
+}
+
+#nki {
+  border-width: 1px;
+  border-color: gray;
+  border-style: solid;  
+  width: 796px;
+  height: 14pt;
+  padding-left: 4px;
+  font-family: Arial, Sans-serif;
+  font-size: 10pt;
+}

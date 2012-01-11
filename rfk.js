@@ -483,8 +483,10 @@ var robotfindskitten = function(rfk, global) {
     return Math.floor(Math.random() * this.getMaxY());
   };
   
-  rfk.displayNki = function displayNki(nki) {
+  rfk.displayNki = function displayNki(nki, color) {
     this.nkiElement.innerHTML = nki;
+    color = color || "white";
+    this.nkiElement.style.color = color;    
   };
   
   rfk.resetCanvas = function resetCanvas() {
@@ -532,10 +534,9 @@ var robotfindskitten = function(rfk, global) {
   
   rfk.nkis.init = function init() {
 
-    var usedNkis = [];
     this.length = 0; // Reset the array of NKIs
 
-    for (nkiCount = 0; nkiCount < rfk.NKI_COUNT; nkiCount++)
+    for (var nkiCount = 0; nkiCount < rfk.NKI_COUNT; nkiCount++)
     {
       var x = rfk.randomX();
       var y = rfk.randomY();
@@ -604,11 +605,12 @@ var robotfindskitten = function(rfk, global) {
     {      
       if (rfk.nkis[newRobotY] && rfk.nkis[newRobotY][newRobotX])
       {
-        rfk.displayNki(rfk.nkis[newRobotY][newRobotX].text);
+        var nki = rfk.nkis[newRobotY][newRobotX];
+        rfk.displayNki(nki.text, nki.color);
       }
       else if ((rfk.kitten.x === newRobotX) && (rfk.kitten.y === newRobotY))
       {
-          rfk.displayNki("You found kitten!!!!!");
+          rfk.displayNki("You found kitten!!!!!  [Press ESC to play again]");
           rfk.playAnimation(0);
       }
       else
@@ -624,8 +626,12 @@ var robotfindskitten = function(rfk, global) {
   rfk.playAnimation = function playAnimation(offset) {
       if (offset !== 15) {
         rfk.resetCanvas();
-        rfk.robot.drawGraphic(5 + offset, (rfk.getMaxY() / 2) - 2);
-        rfk.kitten.drawGraphic(rfk.getMaxX() - 15 - offset, (rfk.getMaxY() / 2) - 2);
+        
+        var top = (rfk.getMaxY() / 2) - 2;
+        
+        rfk.robot.drawGraphic(6 + offset, top);
+        rfk.heart.drawGraphic(rfk.getMaxX() / 2 - 6, top);
+        rfk.kitten.drawGraphic(rfk.getMaxX() - 15 - offset, top);
         setTimeout(function() { rfk.playAnimation(offset + 1); }, 250);
       }
   };
@@ -708,6 +714,39 @@ var robotfindskitten = function(rfk, global) {
       rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+3});
       rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+8, "y" : y+3});
       rfk.drawScreenItem({"character" : ")", "color" : "orange", "x" : x+9, "y" : y+3});
+  };
+  
+  rfk.heart = {};
+  
+  rfk.heart.drawGraphic = function drawGraphic(x, y) {
+    // .::. .::.
+    rfk.drawScreenItem({"character" : ".", "color" : "red", "x" : x, "y" : y});
+    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+1, "y" : y});
+    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+2, "y" : y});
+    rfk.drawScreenItem({"character" : ".", "color" : "red", "x" : x+3, "y" : y});
+    rfk.drawScreenItem({"character" : ".", "color" : "red", "x" : x+5, "y" : y});
+    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+6, "y" : y});
+    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+7, "y" : y});
+    rfk.drawScreenItem({"character" : ".", "color" : "red", "x" : x+8, "y" : y});
+    
+    // :::::::::
+    for (var offset = 0; offset < 9; offset++) {
+      rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+1});   
+    }
+    
+    // ':::::::'
+    rfk.drawScreenItem({"character" : "'", "color" : "red", "x" : x, "y" : y+2});
+    for (offset = 1; offset < 7; offset++) {
+      rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+2});   
+    }
+    rfk.drawScreenItem({"character" : "'", "color" : "red", "x" : x + 7, "y" : y+2});
+    
+    //   ':::'
+    rfk.drawScreenItem({"character" : "'", "color" : "red", "x" : x+2, "y" : y+3});
+    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+3, "y" : y+3});
+    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+4, "y" : y+3});
+    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+5, "y" : y+3});
+    rfk.drawScreenItem({"character" : "'", "color" : "red", "x" : x+6, "y" : y+3});
   };
   
   return rfk;
