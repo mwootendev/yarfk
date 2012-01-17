@@ -18,3 +18,9 @@ body {
   font-family: Arial, Sans-serif;
   font-size: 10pt;
 }
+
+#title {
+  font-family: Courier, Monospace;
+  font-size: 10pt;
+  color: gray;
+}
