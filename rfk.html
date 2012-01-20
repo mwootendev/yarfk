@@ -21,7 +21,8 @@
     <script src="rfk.js"></script>
     <script type="text/javascript">
       $(document).ready(function () {
-        robotfindskitten.init($("#rfk").get(0), $("#nki").get(0));  
+        var rfk = new com.robotfindskitten.Game($("#rfk").get(0), $("#nki").get(0));   
+        rfk.startGame(); 
       });
     </script>
     <link rel="stylesheet" href="rfk.css" type="text/css" />

@@ -715,23 +715,70 @@ com.robotfindskitten.NonKittenItems = (function(rfk, global) {
   
 })(com.robotfindskitten || {}, this);
 
-var robotfindskitten = function(rfk, global) {
+com.robotfindskitten.Heart = (function(rfk, global) {
 
-  var NKI_COUNT = 20;
- 
-  rfk.robot = new com.robotfindskitten.Robot(); 
-  rfk.nkis = new com.robotfindskitten.NonKittenItems();
-    
-  rfk.init = function init(canvas, nkiElement) {
-     this.screen = new com.robotfindskitten.Screen(canvas);
-     rfk.robot.screen = this.screen;
-     rfk.nkis.screen = this.screen;
-     this.nkiElement = nkiElement;
-     
-     this.initializeGame();
+  var Heart;
+  
+  Heart = function(screen) {
+    this.screen = screen;  
   };
   
-  rfk.initializeGame = function initializeGame() {
+  Heart.prototype.drawGraphic = function drawGraphic(x, y) {
+    // .::. .::.
+    this.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x, "y" : y});
+    this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+1, "y" : y});
+    this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+2, "y" : y});
+    this.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+3, "y" : y});
+    this.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+5, "y" : y});
+    this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+6, "y" : y});
+    this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+7, "y" : y});
+    this.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+8, "y" : y});
+    
+    // :::::::::
+    for (var offset = 0; offset < 9; offset++) {
+      this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+1});   
+    }
+    
+    // ':::::::'
+    this.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x, "y" : y+2});
+    for (offset = 1; offset < 7; offset++) {
+      this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+2});   
+    }
+    this.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x + 7, "y" : y+2});
+    
+    //   ':::'
+    this.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x+2, "y" : y+3});
+    this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+3, "y" : y+3});
+    this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+4, "y" : y+3});
+    this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+5, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x+6, "y" : y+3});
+  };
+  
+  return Heart;
+
+})(com.robotfindskitten || {}, this);
+
+com.robotfindskitten.Game = (function(rfk, global) {
+
+  var NKI_COUNT = 20;
+  
+  var Game;
+      
+  Game = function init(canvas, nkiElement) {
+     this.screen = new rfk.Screen(canvas);
+     this.nkiElement = nkiElement;
+          
+     this.robot = new rfk.Robot(this.screen);
+     this.nkis = new rfk.NonKittenItems(this.screen);
+     this.heart = new rfk.Heart(this.screen);
+     
+     var self = this;
+     
+     global.addEventListener("keyup", function(e) { self.handleKeyup(e); }, true);
+     global.addEventListener("keydown", function(e) { self.handleKeydown(e); }, true);
+  };
+  
+  Game.prototype.startGame = function startGame() {
      this.screen.clearScreen();
      this.nkis.initialize(NKI_COUNT);
      this.nkis.draw();
@@ -742,141 +789,107 @@ var robotfindskitten = function(rfk, global) {
      this.initializeKitten();
      this.kitten.draw();     
   };
+  
+  Game.prototype.initializeRobotLocation = function initializeRobotLocation() {
+    var x = this.screen.randomX();
+    var y = this.screen.randomY();
+    
+    while (this.nkis.isNkiAtLocation(x, y))
+    {
+        x = this.screen.randomX();
+        y = this.screen.randomY();
+    }
+    
+    this.robot.move(x, y);
+  };
+  
+  Game.prototype.initializeKitten = function initializeKitten() {
+    var x = this.screen.randomX();
+    var y = this.screen.randomY();
+
+    while (this.nkis.isNkiAtLocation(x, y) || 
+           (this.robot.x === x && this.robot.y === y))
+    {
+      x = this.screen.randomX();
+      y = this.screen.randomY();
+    }
+    
+    this.kitten = new rfk.Kitten(this.screen, x, y);
+  };
    
-  rfk.displayNki = function displayNki(nki, color) {
+  Game.prototype.displayNki = function displayNki(nki, color) {
     this.nkiElement.innerHTML = nki;
     color = color || "white";
     this.nkiElement.style.color = color;    
   };
  
-  rfk.handleKeydown = function handleKeydown(event) {
+  Game.prototype.handleKeydown = function handleKeydown(event) {
     switch (event.keyCode) {
       case 38:  // Up arrow
-        rfk.moveRobot(0, -1);
+        this.moveRobot(0, -1);
         break;
    
       case 40:  // Down arrow
-        rfk.moveRobot(0, 1);
+        this.moveRobot(0, 1);
         break;
   
       case 37:  // Left arrow
-        rfk.moveRobot(-1, 0);
+        this.moveRobot(-1, 0);
         break;
   
       case 39:  // Right arrow
-        rfk.moveRobot(1, 0);
+        this.moveRobot(1, 0);
         break;
     }  
   };
   
-  rfk.handleKeyup = function handleKeyup(event) {
+  Game.prototype.handleKeyup = function handleKeyup(event) {
     if (event.keyCode === 27) {
-        rfk.initializeGame();
+        this.startGame();
     }  
   };
-  
-  rfk.initializeRobotLocation = function initializeRobotLocation() {
-    var x = rfk.screen.randomX();
-    var y = rfk.screen.randomY();
     
-    while (rfk.nkis.isNkiAtLocation(x, y))
-    {
-        x = rfk.screen.randomX();
-        y = rfk.screen.randomY();
-    }
+  Game.prototype.moveRobot = function moveRobot(deltaX, deltaY) {
+    var newRobotX = this.robot.x + deltaX;
+    var newRobotY = this.robot.y + deltaY;
     
-    rfk.robot.move(x, y);
-  };
-    
-  rfk.moveRobot = function moveRobot(deltaX, deltaY) {
-    var newRobotX = rfk.robot.x + deltaX;
-    var newRobotY = rfk.robot.y + deltaY;
-    
-    if (((newRobotX >= 0) && (newRobotX <= rfk.screen.getMaxX())) && 
-       ((newRobotY >= 0) && (newRobotY < rfk.screen.getMaxY())))
+    if (((newRobotX >= 0) && (newRobotX <= this.screen.getMaxX())) && 
+       ((newRobotY >= 0) && (newRobotY < this.screen.getMaxY())))
     {      
-      if (rfk.nkis.isNkiAtLocation(newRobotX, newRobotY))
+      if (this.nkis.isNkiAtLocation(newRobotX, newRobotY))
       {
-        var nki = rfk.nkis.getNkiAtLocation(newRobotX, newRobotY);
-        rfk.displayNki(nki.text, nki.color);
+        var nki = this.nkis.getNkiAtLocation(newRobotX, newRobotY);
+        this.displayNki(nki.text, nki.color);
       }
       else if ((this.kitten.x === newRobotX) && (this.kitten.y === newRobotY))
       {
-          rfk.displayNki("You found kitten!!!!!  [Press ESC to play again]");
-          rfk.playAnimation(0);
+          this.displayNki("You found kitten!!!!!  [Press ESC to play again]");
+          this.playAnimation(0);
       }
       else
       {
-        rfk.screen.clearScreenItem(rfk.robot);
-        rfk.robot.move(newRobotX, newRobotY);
-        rfk.robot.draw();
+        this.robot.erase();
+        this.robot.move(newRobotX, newRobotY);
+        this.robot.draw();
       }
     }
   };
   
-  rfk.playAnimation = function playAnimation(offset) {
-      if (offset !== 15) {
-        rfk.screen.clearScreen();
+  Game.prototype.playAnimation = function playAnimation(offset) {
+    if (offset !== 15) {
+      this.screen.clearScreen();
         
-        var top = (rfk.screen.getMaxY() / 2) - 2;
-        
-        rfk.robot.drawGraphic(6 + offset, top);
-        rfk.heart.drawGraphic(rfk.screen.getMaxX() / 2 - 6, top);
-        this.kitten.drawGraphic(rfk.screen.getMaxX() - 15 - offset, top);
-        setTimeout(function() { rfk.playAnimation(offset + 1); }, 250);
-      }
-  };
-   
-  global.addEventListener("keyup", rfk.handleKeyup, true);
-  global.addEventListener("keydown", rfk.handleKeydown, true);
-     
-  rfk.initializeKitten = function initializeKitten() {
-    var x = rfk.screen.randomX();
-    var y = rfk.screen.randomY();
-
-    while (rfk.nkis.isNkiAtLocation(x, y) || 
-           (rfk.robot.x === x && rfk.robot.y === y))
-    {
-      x = rfk.screen.randomX();
-      y = rfk.screen.randomY();
+      var top = (this.screen.getMaxY() / 2) - 2;
+      var self = this;
+      
+      this.robot.drawGraphic(6 + offset, top);
+      this.heart.drawGraphic(this.screen.getMaxX() / 2 - 6, top);
+      this.kitten.drawGraphic(this.screen.getMaxX() - 15 - offset, top);
+           
+      setTimeout(function() { self.playAnimation(offset + 1); }, 250);
     }
-    
-    this.kitten = new com.robotfindskitten.Kitten(this.screen, x, y);
-  };
-    
-  rfk.heart = {};
-  
-  rfk.heart.drawGraphic = function drawGraphic(x, y) {
-    // .::. .::.
-    rfk.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x, "y" : y});
-    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+1, "y" : y});
-    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+2, "y" : y});
-    rfk.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+3, "y" : y});
-    rfk.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+5, "y" : y});
-    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+6, "y" : y});
-    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+7, "y" : y});
-    rfk.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+8, "y" : y});
-    
-    // :::::::::
-    for (var offset = 0; offset < 9; offset++) {
-      rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+1});   
-    }
-    
-    // ':::::::'
-    rfk.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x, "y" : y+2});
-    for (offset = 1; offset < 7; offset++) {
-      rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+2});   
-    }
-    rfk.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x + 7, "y" : y+2});
-    
-    //   ':::'
-    rfk.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x+2, "y" : y+3});
-    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+3, "y" : y+3});
-    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+4, "y" : y+3});
-    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+5, "y" : y+3});
-    rfk.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x+6, "y" : y+3});
   };
   
-  return rfk;
+  return Game;
 
-}(robotfindskitten || {}, this);
+})(com.robotfindskitten || {}, this);
