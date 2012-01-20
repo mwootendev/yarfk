@@ -545,6 +545,10 @@ com.robotfindskitten.Robot = (function(rfk, global) {
     this.x = 0;
     this.y = 0;
   };
+  
+  Robot.prototype.draw = function draw() {
+    this.screen.drawScreenItem(this);  
+  };
     
   Robot.prototype.drawGraphic = function drawGraphic(x, y) {
       
@@ -624,6 +628,10 @@ com.robotfindskitten.NonKittenItems = (function(rfk, global) {
     }
   };
   
+  NonKittenItems.prototype.isNkiAtLocation = function isNkiAtLocation(x, y) {
+    return ((this[y]) !== undefined && (this[y][x] !== undefined));
+  };
+  
   return NonKittenItems;
   
 })(com.robotfindskitten || {}, this);
@@ -634,7 +642,6 @@ var robotfindskitten = function(rfk, global) {
   
   var colorGenerator = new com.robotfindskitten.ColorGenerator();
   var characterGenerator = new com.robotfindskitten.CharacterGenerator();
-  var nonKittenItemNames = new com.robotfindskitten.NonKittenItemNames();
   
   rfk.robot = new com.robotfindskitten.Robot(); 
   rfk.nkis = new com.robotfindskitten.NonKittenItems();
@@ -654,7 +661,7 @@ var robotfindskitten = function(rfk, global) {
      this.nkis.draw();
      
      this.robot.init();
-     this.screen.drawScreenItem(this.robot);
+     this.robot.draw();
      
      this.kitten.init();
      this.screen.drawScreenItem(this.kitten);      
@@ -665,48 +672,7 @@ var robotfindskitten = function(rfk, global) {
     color = color || "white";
     this.nkiElement.style.color = color;    
   };
-  
-  /*
-  
-  rfk.drawNkis = function drawNkis() {
-    
-    for (var y in this.nkis) {
-      
-      for (var x in this.nkis[y]) {
-        rfk.screen.drawScreenItem(this.nkis[y][x]);  
-      }
-    }
-  };
-  
-   
-  rfk.nkis.init = function init() {
-
-    this.length = 0; // Reset the array of NKIs
-
-    for (var nkiCount = 0; nkiCount < NKI_COUNT; nkiCount++)
-    {
-      var x = rfk.randomX();
-      var y = rfk.randomY();
-        
-      if (!this[y])
-      {
-        this[y] = [];    
-      }
-      
-      while (this[y] && this[y][x])
-      {
-        x = rfk.randomX();   
-      }
-           
-      this[y][x] = { "character" : characterGenerator.randomCharacter(), 
-                     "color" : colorGenerator.randomColor(), 
-                     "x" : x, 
-                     "y" : y,
-                     "text" : nonKittenItemNames.randomItem()};
-    }  
-  };
-  */
-  
+ 
   rfk.handleKeydown = function handleKeydown(event) {
     switch (event.keyCode) {
       case 38:  // Up arrow
@@ -737,7 +703,7 @@ var robotfindskitten = function(rfk, global) {
     this.x = rfk.screen.randomX();
     this.y = rfk.screen.randomY();
     
-    while (rfk.nkis[this.y] && rfk.nkis[this.y][this.x])
+    while (rfk.nkis.isNkiAtLocation(this.x, this.y))
     {
         this.x = rfk.screen.randomX();
         this.y = rfk.screen.randomY();
@@ -793,7 +759,7 @@ var robotfindskitten = function(rfk, global) {
     this.x = rfk.screen.randomX();
     this.y = rfk.screen.randomY();
 
-    while ((rfk.nkis[this.y] && rfk.nkis[this.y][this.x]) || 
+    while (rfk.nkis.isNkiAtLocation(this.x, this.y) || 
            (rfk.robot.x === this.x && rfk.robot.y === this.y))
     {
       this.x = rfk.screen.randomX();
