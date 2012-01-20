@@ -13,10 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
- 
-var robotfindskitten = function(rfk, global) {
 
-  rfk.nonKittenItems = [
+var com = com || {};
+com.robotfindskitten = com.robotfindskitten || {};
+
+com.robotfindskitten.NonKittenItems = (function(rfk, global) {
+  
+  var nonKittenItems = [
     "\"I pity the fool who mistakes me for kitten!\", sez Mr. T.",
     "That's just an old tin can.",
     "It's an altar to the horse god.",
@@ -425,62 +428,183 @@ var robotfindskitten = function(rfk, global) {
     "The spectre of Sherlock Holmes wills you onwards."
   ];
   
-  rfk.nonKittenItems.randomItem = function() {
-    var nki = this[Math.floor(Math.random()*this.length)];
-    return nki;
+  var NonKittenItems = function() {};
+  
+  NonKittenItems.prototype = {
+    randomItem : function() {
+      return nonKittenItems[Math.floor(Math.random() * nonKittenItems.length)];   
+    }
   };
   
-  rfk.nkis = [];
-  rfk.robot = {"character" : "#", "color" : "grey", "x" : 0, "y" : 0};
+  return NonKittenItems;
   
+})(com.robotfindskitten || {}, this);
+
+com.robotfindskitten.ColorGenerator = (function(rfk, global) {
+    
+    var COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan"];
+    var ColorGenerator;
+    
+    ColorGenerator = function() {};
+    
+    ColorGenerator.prototype.randomColor = function randomColor() {
+      return COLORS[Math.floor(Math.random() * COLORS.length)];
+    };
+    
+    return ColorGenerator;
+    
+})(com.robotfindskitten || {}, this);
+
+com.robotfindskitten.CharacterGenerator = (function(rfk, global) {
+    
+    var CharacterGenerator;
+    
+    CharacterGenerator = function() {};
+    
+    CharacterGenerator.prototype.randomCharacter = function randomCharacter() {
+      var exclamationIndex = "!".charCodeAt(0);
+      return String.fromCharCode(Math.floor(Math.random() * 
+        ((126 - exclamationIndex + 1)) + exclamationIndex));    
+    };
+    
+    return CharacterGenerator;
+    
+})(com.robotfindskitten || {}, this);
+
+com.robotfindskitten.Screen = (function(rfk, global) {
+    
+    var FONT_SIZE = 12;
+    var BACKGROUND_COLOR = "black";
+    
+    var Screen = function(canvas) {
+      this.canvas = canvas;
+      this.context = canvas.getContext("2d");  
+    };
+    
+    Screen.prototype.drawScreenItem = function drawScreenItem(screenItem) {
+      this.context.save();
+    
+      this.context.font = FONT_SIZE + "pt monospace";
+      this.context.textBaseline = "top";
+    
+      this.context.fillStyle = screenItem.color;
+      this.context.fillText(screenItem.character, screenItem.x * FONT_SIZE, screenItem.y * FONT_SIZE);
+    
+      this.context.restore();
+    };
+    
+    Screen.prototype.clearScreen = function clearScreen() {
+      this.context.save();
+    
+      this.context.fillColor = BACKGROUND_COLOR;
+      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    
+      this.context.restore();
+    };
+    
+    Screen.prototype.clearScreenItem = function clearScreenItem(screenItem) {
+      this.context.save();
+    
+      this.context.font = FONT_SIZE + "pt monospace";
+      this.context.textBaseline = "top";
+    
+      this.context.fillStyle = BACKGROUND_COLOR;
+      this.context.fillText(screenItem.character, screenItem.x * FONT_SIZE, screenItem.y * FONT_SIZE);
+    
+      this.context.restore();
+    };
+    
+    Screen.prototype.getMaxX = function getMaxX() {
+      return (this.canvas.width / FONT_SIZE);
+    };
+  
+    Screen.prototype.getMaxY = function getMaxY() {
+      return (this.canvas.height / FONT_SIZE);  
+    };
+    
+    return Screen;
+    
+})(com.robotfindskitten || {}, this);
+
+com.robotfindskitten.Robot = (function(rfk, global) {
+    
+  var Robot = function(screen) {
+    
+    this.screen = screen;
+      
+    this.character = "#";
+    this.color = "grey";
+    this.x = 0;
+    this.y = 0;
+  };
+    
+  Robot.prototype.drawGraphic = function drawGraphic(x, y) {
+      
+    // [-]
+    this.screen.drawScreenItem({"character" : "[", "color" : "blue", "x" : x, "y" : y});
+    this.screen.drawScreenItem({"character" : "-", "color" : "cyan", "x" : x+1, "y" : y});
+    this.screen.drawScreenItem({"character" : "]", "color" : "blue", "x" : x+2, "y" : y});
+      
+    // (+)=C
+    this.screen.drawScreenItem({"character" : "(", "color" : "blue", "x" : x, "y" : y+1});
+    this.screen.drawScreenItem({"character" : "+", "color" : "red", "x" : x+1, "y" : y+1});
+    this.screen.drawScreenItem({"character" : ")", "color" : "blue", "x" : x+2, "y" : y+1});
+    this.screen.drawScreenItem({"character" : "=", "color" : "cyan", "x" : x+3, "y" : y+1});
+    this.screen.drawScreenItem({"character" : "C", "color" : "cyan", "x" : x+4, "y" : y+1});
+      
+    // | |
+    this.screen.drawScreenItem({"character" : "|", "color" : "blue", "x" : x, "y" : y+2});
+    this.screen.drawScreenItem({"character" : "|", "color" : "blue", "x" : x+2, "y" : y+2});
+      
+    // OOO
+    this.screen.drawScreenItem({"character" : "O", "color" : "gray", "x" : x, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "O", "color" : "gray", "x" : x+1, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "O", "color" : "gray", "x" : x+2, "y" : y+3});
+  }  
+      
+  return Robot;
+    
+})(com.robotfindskitten || {}, this);
+
+var robotfindskitten = function(rfk, global) {
+
+  var colorGenerator = new com.robotfindskitten.ColorGenerator();
+  var characterGenerator = new com.robotfindskitten.CharacterGenerator();
+  
+  rfk.nonKittenItems = new com.robotfindskitten.NonKittenItems();
+  rfk.robot = new com.robotfindskitten.Robot(); 
+  rfk.nkis = [];
+    
   rfk.NKI_COUNT = 20;
-  rfk.FONT_SIZE = 12;
-  rfk.BACKGROUND_COLOR = "black";
   
   rfk.init = function init(canvas, nkiElement) {
-     this.canvas = canvas;
-     this.context = canvas.getContext("2d");
+     this.screen = new com.robotfindskitten.Screen(canvas);
+     rfk.robot.screen = this.screen;
      this.nkiElement = nkiElement;
      
      this.initializeGame();
   };
   
   rfk.initializeGame = function initializeGame() {
-     this.resetCanvas();
+     this.screen.clearScreen();
      this.nkis.init();
      this.drawNkis();
      
      this.robot.init();
-     this.drawScreenItem(this.robot);
+     this.screen.drawScreenItem(this.robot);
      
      this.kitten.init();
-     this.drawScreenItem(this.kitten);      
+     this.screen.drawScreenItem(this.kitten);      
   };
   
-  rfk.randomCharacter = function randomCharacter() {
-    var exclamationIndex = "!".charCodeAt(0);
-    return String.fromCharCode(Math.floor(Math.random() * ((126 - exclamationIndex + 1)) + exclamationIndex));    
-  };
   
-  rfk.getMaxX = function getMaxX() {
-    return (this.canvas.width / this.FONT_SIZE);
-  };
-  
-  rfk.getMaxY = function getMaxY() {
-    return (this.canvas.height / this.FONT_SIZE);  
-  };
-  
-  rfk.randomColor = function randomColor() {
-    var COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan"];
-    return COLORS[Math.floor(Math.random() * COLORS.length)];
-  };
   
   rfk.randomX = function randomX() {
-    return Math.floor(Math.random() * this.getMaxX());    
+    return Math.floor(Math.random() * this.screen.getMaxX());    
   };
   
   rfk.randomY = function randomY() {
-    return Math.floor(Math.random() * this.getMaxY());
+    return Math.floor(Math.random() * this.screen.getMaxY());
   };
   
   rfk.displayNki = function displayNki(nki, color) {
@@ -488,50 +612,17 @@ var robotfindskitten = function(rfk, global) {
     color = color || "white";
     this.nkiElement.style.color = color;    
   };
-  
-  rfk.resetCanvas = function resetCanvas() {
-    this.context.save();
-    
-    this.context.fillColor = rfk.BACKGROUND_COLOR;
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    
-    this.context.restore();
-  };
-  
+   
   rfk.drawNkis = function drawNkis() {
     
     for (var y in this.nkis) {
       
       for (var x in this.nkis[y]) {
-        rfk.drawScreenItem(this.nkis[y][x]);  
+        rfk.screen.drawScreenItem(this.nkis[y][x]);  
       }
     }
   };
-  
-  rfk.drawScreenItem = function drawScreenItem(screenItem) {
-    this.context.save();
     
-    this.context.font = rfk.FONT_SIZE + "pt monospace";
-    this.context.textBaseline = "top";
-    
-    this.context.fillStyle = screenItem.color;
-    this.context.fillText(screenItem.character, screenItem.x * rfk.FONT_SIZE, screenItem.y * rfk.FONT_SIZE);
-    
-    this.context.restore();
-  };
-  
-  rfk.clearScreenItem = function clearScreenItem(screenItem) {
-    this.context.save();
-    
-    this.context.font = rfk.FONT_SIZE + "pt monospace";
-    this.context.textBaseline = "top";
-    
-    this.context.fillStyle = rfk.BACKGROUND_COLOR;
-    this.context.fillText(screenItem.character, screenItem.x * rfk.FONT_SIZE, screenItem.y * rfk.FONT_SIZE);
-    
-    this.context.restore();
-  };
-  
   rfk.nkis.init = function init() {
 
     this.length = 0; // Reset the array of NKIs
@@ -551,8 +642,8 @@ var robotfindskitten = function(rfk, global) {
         x = rfk.randomX();   
       }
            
-      this[y][x] = { "character" : rfk.randomCharacter(), 
-                     "color" : rfk.randomColor(), 
+      this[y][x] = { "character" : characterGenerator.randomCharacter(), 
+                     "color" : colorGenerator.randomColor(), 
                      "x" : x, 
                      "y" : y,
                      "text" : rfk.nonKittenItems.randomItem()};
@@ -600,8 +691,8 @@ var robotfindskitten = function(rfk, global) {
     var newRobotX = this.x + deltaX;
     var newRobotY = this.y + deltaY;
     
-    if (((newRobotX >= 0) && (newRobotX <= rfk.getMaxX())) && 
-       ((newRobotY >= 0) && (newRobotY < rfk.getMaxY())))
+    if (((newRobotX >= 0) && (newRobotX <= rfk.screen.getMaxX())) && 
+       ((newRobotY >= 0) && (newRobotY < rfk.screen.getMaxY())))
     {      
       if (rfk.nkis[newRobotY] && rfk.nkis[newRobotY][newRobotX])
       {
@@ -615,10 +706,10 @@ var robotfindskitten = function(rfk, global) {
       }
       else
       {
-        rfk.clearScreenItem(this);
+        rfk.screen.clearScreenItem(this);
         this.x = newRobotX;
         this.y = newRobotY;
-        rfk.drawScreenItem(this);
+        rfk.screen.drawScreenItem(this);
       }
     }
   };
@@ -635,35 +726,11 @@ var robotfindskitten = function(rfk, global) {
         setTimeout(function() { rfk.playAnimation(offset + 1); }, 250);
       }
   };
-  
-  rfk.robot.drawGraphic = function drawGraphic(x, y) {
-      
-      // [-]
-      rfk.drawScreenItem({"character" : "[", "color" : "blue", "x" : x, "y" : y});
-      rfk.drawScreenItem({"character" : "-", "color" : "cyan", "x" : x+1, "y" : y});
-      rfk.drawScreenItem({"character" : "]", "color" : "blue", "x" : x+2, "y" : y});
-      
-      // (+)=C
-      rfk.drawScreenItem({"character" : "(", "color" : "blue", "x" : x, "y" : y+1});
-      rfk.drawScreenItem({"character" : "+", "color" : "red", "x" : x+1, "y" : y+1});
-      rfk.drawScreenItem({"character" : ")", "color" : "blue", "x" : x+2, "y" : y+1});
-      rfk.drawScreenItem({"character" : "=", "color" : "cyan", "x" : x+3, "y" : y+1});
-      rfk.drawScreenItem({"character" : "C", "color" : "cyan", "x" : x+4, "y" : y+1});
-      
-      // | |
-      rfk.drawScreenItem({"character" : "|", "color" : "blue", "x" : x, "y" : y+2});
-      rfk.drawScreenItem({"character" : "|", "color" : "blue", "x" : x+2, "y" : y+2});
-      
-      // OOO
-      rfk.drawScreenItem({"character" : "O", "color" : "gray", "x" : x, "y" : y+3});
-      rfk.drawScreenItem({"character" : "O", "color" : "gray", "x" : x+1, "y" : y+3});
-      rfk.drawScreenItem({"character" : "O", "color" : "gray", "x" : x+2, "y" : y+3});
-  };
    
   global.addEventListener("keyup", rfk.handleKeyup, true);
   global.addEventListener("keydown", rfk.handleKeydown, true);
   
-  rfk.kitten = {"character" : rfk.randomCharacter(), "color" : rfk.randomColor(), "x" : 0, "y" : 0};
+  rfk.kitten = {"character" : characterGenerator.randomCharacter(), "color" : colorGenerator.randomColor(), "x" : 0, "y" : 0};
   
   rfk.kitten.init = function init() {
     this.x = rfk.randomX();
@@ -679,74 +746,74 @@ var robotfindskitten = function(rfk, global) {
   
   rfk.kitten.drawGraphic = function drawGraphic(x, y) {
       // |\_/|
-      rfk.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y});
-      rfk.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+2, "y" : y});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y});
-      rfk.drawScreenItem({"character" : "/", "color" : "orange", "x" : x+4, "y" : y});
-      rfk.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y});
+      rfk.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y});
+      rfk.screen.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+2, "y" : y});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y});
+      rfk.screen.drawScreenItem({"character" : "/", "color" : "orange", "x" : x+4, "y" : y});
+      rfk.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y});
       
       // |o o|__
-      rfk.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y+1});
-      rfk.drawScreenItem({"character" : "o", "color" : "green", "x" : x+2, "y" : y+1});
-      rfk.drawScreenItem({"character" : "o", "color" : "green", "x" : x+4, "y" : y+1});
-      rfk.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y+1});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+1});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+1});
+      rfk.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y+1});
+      rfk.screen.drawScreenItem({"character" : "o", "color" : "green", "x" : x+2, "y" : y+1});
+      rfk.screen.drawScreenItem({"character" : "o", "color" : "green", "x" : x+4, "y" : y+1});
+      rfk.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y+1});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+1});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+1});
       
       // =-*-=__\
-      rfk.drawScreenItem({"character" : "=", "color" : "white", "x" : x+1, "y" : y+2});
-      rfk.drawScreenItem({"character" : "-", "color" : "white", "x" : x+2, "y" : y+2});
-      rfk.drawScreenItem({"character" : "*", "color" : "red", "x" : x+3, "y" : y+2});
-      rfk.drawScreenItem({"character" : "-", "color" : "white", "x" : x+4, "y" : y+2});
-      rfk.drawScreenItem({"character" : "=", "color" : "white", "x" : x+5, "y" : y+2});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+2});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+2});
-      rfk.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+8, "y" : y+2});
+      rfk.screen.drawScreenItem({"character" : "=", "color" : "white", "x" : x+1, "y" : y+2});
+      rfk.screen.drawScreenItem({"character" : "-", "color" : "white", "x" : x+2, "y" : y+2});
+      rfk.screen.drawScreenItem({"character" : "*", "color" : "red", "x" : x+3, "y" : y+2});
+      rfk.screen.drawScreenItem({"character" : "-", "color" : "white", "x" : x+4, "y" : y+2});
+      rfk.screen.drawScreenItem({"character" : "=", "color" : "white", "x" : x+5, "y" : y+2});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+2});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+2});
+      rfk.screen.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+8, "y" : y+2});
       
       // c_c__(___)
-      rfk.drawScreenItem({"character" : "c", "color" : "orange", "x" : x, "y" : y+3});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+1, "y" : y+3});
-      rfk.drawScreenItem({"character" : "c", "color" : "orange", "x" : x+2, "y" : y+3});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y+3});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+4, "y" : y+3});
-      rfk.drawScreenItem({"character" : "(", "color" : "orange", "x" : x+5, "y" : y+3});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+3});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+3});
-      rfk.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+8, "y" : y+3});
-      rfk.drawScreenItem({"character" : ")", "color" : "orange", "x" : x+9, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "c", "color" : "orange", "x" : x, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+1, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "c", "color" : "orange", "x" : x+2, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+4, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "(", "color" : "orange", "x" : x+5, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+8, "y" : y+3});
+      rfk.screen.drawScreenItem({"character" : ")", "color" : "orange", "x" : x+9, "y" : y+3});
   };
   
   rfk.heart = {};
   
   rfk.heart.drawGraphic = function drawGraphic(x, y) {
     // .::. .::.
-    rfk.drawScreenItem({"character" : ".", "color" : "red", "x" : x, "y" : y});
-    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+1, "y" : y});
-    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+2, "y" : y});
-    rfk.drawScreenItem({"character" : ".", "color" : "red", "x" : x+3, "y" : y});
-    rfk.drawScreenItem({"character" : ".", "color" : "red", "x" : x+5, "y" : y});
-    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+6, "y" : y});
-    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+7, "y" : y});
-    rfk.drawScreenItem({"character" : ".", "color" : "red", "x" : x+8, "y" : y});
+    rfk.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x, "y" : y});
+    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+1, "y" : y});
+    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+2, "y" : y});
+    rfk.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+3, "y" : y});
+    rfk.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+5, "y" : y});
+    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+6, "y" : y});
+    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+7, "y" : y});
+    rfk.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+8, "y" : y});
     
     // :::::::::
     for (var offset = 0; offset < 9; offset++) {
-      rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+1});   
+      rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+1});   
     }
     
     // ':::::::'
-    rfk.drawScreenItem({"character" : "'", "color" : "red", "x" : x, "y" : y+2});
+    rfk.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x, "y" : y+2});
     for (offset = 1; offset < 7; offset++) {
-      rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+2});   
+      rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+2});   
     }
-    rfk.drawScreenItem({"character" : "'", "color" : "red", "x" : x + 7, "y" : y+2});
+    rfk.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x + 7, "y" : y+2});
     
     //   ':::'
-    rfk.drawScreenItem({"character" : "'", "color" : "red", "x" : x+2, "y" : y+3});
-    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+3, "y" : y+3});
-    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+4, "y" : y+3});
-    rfk.drawScreenItem({"character" : ":", "color" : "red", "x" : x+5, "y" : y+3});
-    rfk.drawScreenItem({"character" : "'", "color" : "red", "x" : x+6, "y" : y+3});
+    rfk.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x+2, "y" : y+3});
+    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+3, "y" : y+3});
+    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+4, "y" : y+3});
+    rfk.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+5, "y" : y+3});
+    rfk.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x+6, "y" : y+3});
   };
   
   return rfk;
