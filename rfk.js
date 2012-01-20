@@ -546,8 +546,17 @@ com.robotfindskitten.Robot = (function(rfk, global) {
     this.y = 0;
   };
   
+  Robot.prototype.move = function move(x, y) {
+    this.x = x;
+    this.y = y;
+  };
+  
   Robot.prototype.draw = function draw() {
     this.screen.drawScreenItem(this);  
+  };
+  
+  Robot.prototype.erase = function draw() {
+    this.screen.clearScreenItem(this);  
   };
     
   Robot.prototype.drawGraphic = function drawGraphic(x, y) {
@@ -578,6 +587,72 @@ com.robotfindskitten.Robot = (function(rfk, global) {
     
 })(com.robotfindskitten || {}, this);
 
+com.robotfindskitten.Kitten = (function(rfk, global) {
+  
+  var characterGenerator = new rfk.CharacterGenerator();
+  var colorGenerator = new rfk.ColorGenerator();
+  
+  var Kitten;
+  
+  Kitten = function(screen, x, y) {
+    this.screen = screen;
+    this.character = characterGenerator.randomCharacter();
+    this.color = colorGenerator.randomColor();
+    this.x = x;
+    this.y = y;
+  };
+  
+  Kitten.prototype.draw = function draw() {
+    this.screen.drawScreenItem(this);  
+  };
+  
+  Kitten.prototype.erase = function draw() {
+    this.screen.clearScreenItem(this);  
+  };
+  
+  Kitten.prototype.drawGraphic = function drawGraphic(x, y) {
+    // |\_/|
+    this.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y});
+    this.screen.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+2, "y" : y});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y});
+    this.screen.drawScreenItem({"character" : "/", "color" : "orange", "x" : x+4, "y" : y});
+    this.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y});
+      
+    // |o o|__
+    this.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y+1});
+    this.screen.drawScreenItem({"character" : "o", "color" : "green", "x" : x+2, "y" : y+1});
+    this.screen.drawScreenItem({"character" : "o", "color" : "green", "x" : x+4, "y" : y+1});
+    this.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y+1});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+1});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+1});
+      
+    // =-*-=__\
+    this.screen.drawScreenItem({"character" : "=", "color" : "white", "x" : x+1, "y" : y+2});
+    this.screen.drawScreenItem({"character" : "-", "color" : "white", "x" : x+2, "y" : y+2});
+    this.screen.drawScreenItem({"character" : "*", "color" : "red", "x" : x+3, "y" : y+2});
+    this.screen.drawScreenItem({"character" : "-", "color" : "white", "x" : x+4, "y" : y+2});
+    this.screen.drawScreenItem({"character" : "=", "color" : "white", "x" : x+5, "y" : y+2});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+2});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+2});
+    this.screen.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+8, "y" : y+2});
+      
+    // c_c__(___)
+    this.screen.drawScreenItem({"character" : "c", "color" : "orange", "x" : x, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+1, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "c", "color" : "orange", "x" : x+2, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+4, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "(", "color" : "orange", "x" : x+5, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+3});
+    this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+8, "y" : y+3});
+    this.screen.drawScreenItem({"character" : ")", "color" : "orange", "x" : x+9, "y" : y+3});
+  };
+  
+  return Kitten;
+  
+})(com.robotfindskitten || {}, this);
+
 com.robotfindskitten.NonKittenItems = (function(rfk, global) {
   
   var characterGenerator = new rfk.CharacterGenerator();
@@ -588,48 +663,52 @@ com.robotfindskitten.NonKittenItems = (function(rfk, global) {
   
   NonKittenItems = function(screen) {
     this.screen = screen;   
+    this.nonKittenItems = [];
   }
   
-  NonKittenItems.prototype = [];
-  
   NonKittenItems.prototype.initialize = function(totalNkiCount) {
-    this.length = 0; // Reset the array of NKIs
+    
+    this.nonKittenItems.length = 0;
 
     for (var nkiCount = 0; nkiCount < totalNkiCount; nkiCount++)
     {
       var x = this.screen.randomX();
       var y = this.screen.randomY();
         
-      if (!this[y])
+      if (!this.nonKittenItems[y])
       {
-        this[y] = [];    
+        this.nonKittenItems[y] = [];    
       }
       
-      while (this[y] && this[y][x])
+      while (this.nonKittenItems[y] && this.nonKittenItems[y][x])
       {
         x = this.screen.randomX();   
       }
            
-      this[y][x] = { "character" : characterGenerator.randomCharacter(), 
-                     "color" : colorGenerator.randomColor(), 
-                     "x" : x, 
-                     "y" : y,
-                     "text" : nonKittenItemNames.randomItem()};
+      this.nonKittenItems[y][x] = { "character" : characterGenerator.randomCharacter(), 
+                                    "color" : colorGenerator.randomColor(), 
+                                    "x" : x, 
+                                    "y" : y,
+                                    "text" : nonKittenItemNames.randomItem()};
     }  
   };
   
   NonKittenItems.prototype.draw = function draw() {
     
-    for (var y in this) {
+    for (var y in this.nonKittenItems) {
       
-      for (var x in this[y]) {
-        this.screen.drawScreenItem(this[y][x]);  
+      for (var x in this.nonKittenItems[y]) {
+        this.screen.drawScreenItem(this.nonKittenItems[y][x]);  
       }
     }
   };
   
   NonKittenItems.prototype.isNkiAtLocation = function isNkiAtLocation(x, y) {
-    return ((this[y]) !== undefined && (this[y][x] !== undefined));
+    return ((this.nonKittenItems[y]) !== undefined && (this.nonKittenItems[y][x] !== undefined));
+  };
+  
+  NonKittenItems.prototype.getNkiAtLocation = function getNkiAtLocation(x, y) {
+    return this.nonKittenItems[y][x];    
   };
   
   return NonKittenItems;
@@ -639,10 +718,7 @@ com.robotfindskitten.NonKittenItems = (function(rfk, global) {
 var robotfindskitten = function(rfk, global) {
 
   var NKI_COUNT = 20;
-  
-  var colorGenerator = new com.robotfindskitten.ColorGenerator();
-  var characterGenerator = new com.robotfindskitten.CharacterGenerator();
-  
+ 
   rfk.robot = new com.robotfindskitten.Robot(); 
   rfk.nkis = new com.robotfindskitten.NonKittenItems();
     
@@ -660,11 +736,11 @@ var robotfindskitten = function(rfk, global) {
      this.nkis.initialize(NKI_COUNT);
      this.nkis.draw();
      
-     this.robot.init();
+     this.initializeRobotLocation();
      this.robot.draw();
      
-     this.kitten.init();
-     this.screen.drawScreenItem(this.kitten);      
+     this.initializeKitten();
+     this.kitten.draw();     
   };
    
   rfk.displayNki = function displayNki(nki, color) {
@@ -676,19 +752,19 @@ var robotfindskitten = function(rfk, global) {
   rfk.handleKeydown = function handleKeydown(event) {
     switch (event.keyCode) {
       case 38:  // Up arrow
-        rfk.robot.move(0, -1);
+        rfk.moveRobot(0, -1);
         break;
    
       case 40:  // Down arrow
-        rfk.robot.move(0, 1);
+        rfk.moveRobot(0, 1);
         break;
   
       case 37:  // Left arrow
-        rfk.robot.move(-1, 0);
+        rfk.moveRobot(-1, 0);
         break;
   
       case 39:  // Right arrow
-        rfk.robot.move(1, 0);
+        rfk.moveRobot(1, 0);
         break;
     }  
   };
@@ -699,40 +775,41 @@ var robotfindskitten = function(rfk, global) {
     }  
   };
   
-  rfk.robot.init = function init() {
-    this.x = rfk.screen.randomX();
-    this.y = rfk.screen.randomY();
+  rfk.initializeRobotLocation = function initializeRobotLocation() {
+    var x = rfk.screen.randomX();
+    var y = rfk.screen.randomY();
     
-    while (rfk.nkis.isNkiAtLocation(this.x, this.y))
+    while (rfk.nkis.isNkiAtLocation(x, y))
     {
-        this.x = rfk.screen.randomX();
-        this.y = rfk.screen.randomY();
+        x = rfk.screen.randomX();
+        y = rfk.screen.randomY();
     }
+    
+    rfk.robot.move(x, y);
   };
     
-  rfk.robot.move = function move(deltaX, deltaY) {
-    var newRobotX = this.x + deltaX;
-    var newRobotY = this.y + deltaY;
+  rfk.moveRobot = function moveRobot(deltaX, deltaY) {
+    var newRobotX = rfk.robot.x + deltaX;
+    var newRobotY = rfk.robot.y + deltaY;
     
     if (((newRobotX >= 0) && (newRobotX <= rfk.screen.getMaxX())) && 
        ((newRobotY >= 0) && (newRobotY < rfk.screen.getMaxY())))
     {      
-      if (rfk.nkis[newRobotY] && rfk.nkis[newRobotY][newRobotX])
+      if (rfk.nkis.isNkiAtLocation(newRobotX, newRobotY))
       {
-        var nki = rfk.nkis[newRobotY][newRobotX];
+        var nki = rfk.nkis.getNkiAtLocation(newRobotX, newRobotY);
         rfk.displayNki(nki.text, nki.color);
       }
-      else if ((rfk.kitten.x === newRobotX) && (rfk.kitten.y === newRobotY))
+      else if ((this.kitten.x === newRobotX) && (this.kitten.y === newRobotY))
       {
           rfk.displayNki("You found kitten!!!!!  [Press ESC to play again]");
           rfk.playAnimation(0);
       }
       else
       {
-        rfk.screen.clearScreenItem(this);
-        this.x = newRobotX;
-        this.y = newRobotY;
-        rfk.screen.drawScreenItem(this);
+        rfk.screen.clearScreenItem(rfk.robot);
+        rfk.robot.move(newRobotX, newRobotY);
+        rfk.robot.draw();
       }
     }
   };
@@ -745,67 +822,28 @@ var robotfindskitten = function(rfk, global) {
         
         rfk.robot.drawGraphic(6 + offset, top);
         rfk.heart.drawGraphic(rfk.screen.getMaxX() / 2 - 6, top);
-        rfk.kitten.drawGraphic(rfk.screen.getMaxX() - 15 - offset, top);
+        this.kitten.drawGraphic(rfk.screen.getMaxX() - 15 - offset, top);
         setTimeout(function() { rfk.playAnimation(offset + 1); }, 250);
       }
   };
    
   global.addEventListener("keyup", rfk.handleKeyup, true);
   global.addEventListener("keydown", rfk.handleKeydown, true);
-  
-  rfk.kitten = {"character" : characterGenerator.randomCharacter(), "color" : colorGenerator.randomColor(), "x" : 0, "y" : 0};
-  
-  rfk.kitten.init = function init() {
-    this.x = rfk.screen.randomX();
-    this.y = rfk.screen.randomY();
+     
+  rfk.initializeKitten = function initializeKitten() {
+    var x = rfk.screen.randomX();
+    var y = rfk.screen.randomY();
 
-    while (rfk.nkis.isNkiAtLocation(this.x, this.y) || 
-           (rfk.robot.x === this.x && rfk.robot.y === this.y))
+    while (rfk.nkis.isNkiAtLocation(x, y) || 
+           (rfk.robot.x === x && rfk.robot.y === y))
     {
-      this.x = rfk.screen.randomX();
-      this.y = rfk.screen.randomY();
+      x = rfk.screen.randomX();
+      y = rfk.screen.randomY();
     }
+    
+    this.kitten = new com.robotfindskitten.Kitten(this.screen, x, y);
   };
-  
-  rfk.kitten.drawGraphic = function drawGraphic(x, y) {
-      // |\_/|
-      rfk.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y});
-      rfk.screen.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+2, "y" : y});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y});
-      rfk.screen.drawScreenItem({"character" : "/", "color" : "orange", "x" : x+4, "y" : y});
-      rfk.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y});
-      
-      // |o o|__
-      rfk.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y+1});
-      rfk.screen.drawScreenItem({"character" : "o", "color" : "green", "x" : x+2, "y" : y+1});
-      rfk.screen.drawScreenItem({"character" : "o", "color" : "green", "x" : x+4, "y" : y+1});
-      rfk.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y+1});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+1});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+1});
-      
-      // =-*-=__\
-      rfk.screen.drawScreenItem({"character" : "=", "color" : "white", "x" : x+1, "y" : y+2});
-      rfk.screen.drawScreenItem({"character" : "-", "color" : "white", "x" : x+2, "y" : y+2});
-      rfk.screen.drawScreenItem({"character" : "*", "color" : "red", "x" : x+3, "y" : y+2});
-      rfk.screen.drawScreenItem({"character" : "-", "color" : "white", "x" : x+4, "y" : y+2});
-      rfk.screen.drawScreenItem({"character" : "=", "color" : "white", "x" : x+5, "y" : y+2});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+2});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+2});
-      rfk.screen.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+8, "y" : y+2});
-      
-      // c_c__(___)
-      rfk.screen.drawScreenItem({"character" : "c", "color" : "orange", "x" : x, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+1, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : "c", "color" : "orange", "x" : x+2, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+4, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : "(", "color" : "orange", "x" : x+5, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+8, "y" : y+3});
-      rfk.screen.drawScreenItem({"character" : ")", "color" : "orange", "x" : x+9, "y" : y+3});
-  };
-  
+    
   rfk.heart = {};
   
   rfk.heart.drawGraphic = function drawGraphic(x, y) {
