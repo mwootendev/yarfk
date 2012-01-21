@@ -17,12 +17,14 @@
 <html>
   <head>
     <title>robotfindskitten</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="rfk.js"></script>
     <script type="text/javascript">
       $(document).ready(function () {
         var rfk = new com.robotfindskitten.Game($("#rfk").get(0), $("#nki").get(0));   
         rfk.startGame(); 
+        
+        $("#newGame").on('click', function() { rfk.startGame(); });
       });
     </script>
     <link rel="stylesheet" href="rfk.css" type="text/css" />
@@ -40,5 +42,6 @@
       I'm sorry, but your browser is not worthy of finding kitten.
     </canvas>
     <div id="nki"></div>
+    <div id="newGame">New Game</div>
   </body>
 </html>
