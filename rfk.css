@@ -2,40 +2,33 @@ body {
   background : black;    
 }
 
-#rfk {
+.rfk-border {
   border-width: 1px;
   border-color: gray;
-  border-style: solid;
+  border-style: solid;    
 }
 
-#nki {
-  border-width: 1px;
-  border-color: gray;
-  border-style: solid;  
-  width: 796px;
-  height: 14pt;
-  padding-left: 4px;
-  font-family: Arial, Sans-serif;
-  font-size: 10pt;
-}
-
-#title {
+.rfk-text {
   font-family: Courier, Monospace;
   font-size: 10pt;
   color: gray;
+}
+
+#nki {
+  width: 796px;
+  height: 14pt;
+  padding-left: 4px;
 }
 
 #newGame {
   margin-top: 5px;
   padding-left: 4px;
-  font-family: Courier, Monospace;
   font-weight: bold;
-  font-size: 10pt;
-  color: gray;
-  border-width: 1px;
-  border-color: gray;
-  border-style: solid;
   width: 76px;
   height: 14pt;
   cursor: default;
+}
+
+#display {
+  white-space: nowrap;    
 }

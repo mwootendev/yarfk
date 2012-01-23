@@ -771,7 +771,10 @@ com.robotfindskitten.Game = (function(rfk, global) {
      this.robot = new rfk.Robot(this.screen);
      this.nkis = new rfk.NonKittenItems(this.screen);
      this.heart = new rfk.Heart(this.screen);
-     
+
+     this.startGameListeners = [];
+     this.kittenFoundListeners = [];
+
      var self = this;
      
      global.addEventListener("keyup", function(e) { self.handleKeyup(e); }, true);
@@ -788,6 +791,16 @@ com.robotfindskitten.Game = (function(rfk, global) {
      
      this.initializeKitten();
      this.kitten.draw();     
+     
+     for (var i = 0; i < this.startGameListeners.length; i++) {
+       this.startGameListeners[i]();
+     }
+  };
+  
+  Game.prototype.addStartGameListener = function addStartGameListener(startGameListener) {
+    if (startGameListener && (typeof(startGameListener) === "function")) {
+      this.startGameListeners.push(startGameListener);  
+    }
   };
   
   Game.prototype.initializeRobotLocation = function initializeRobotLocation() {
