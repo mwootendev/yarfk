@@ -879,17 +879,17 @@ com.robotfindskitten.Game = (function(rfk, global) {
 
   Game.prototype.handleTouchStart = function handleTouchStart(event) {
     event.preventDefault();
-    if (event.targetTouches.length === 1)
+    if (event.touches.length === 1)
     {
-      this.firstTouch = event.targetTouches[0];
+      this.firstTouch = event.touches[0];
     }
   };
 
   Game.prototype.handleTouchMove = function handleTouchMove(event) {
     event.preventDefault();
-    if (event.targetTouches.length === 1)
+    if (event.touches.length === 1)
     {
-      this.lastTouch = event.targetTouches[0];
+      this.lastTouch = event.touches[0];
     }
   };
 
