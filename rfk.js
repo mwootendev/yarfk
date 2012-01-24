@@ -783,6 +783,7 @@ com.robotfindskitten.Game = (function(rfk, global) {
      canvas.addEventListener("touchstart", function(e) { self.handleTouchStart(e); }, false);
      canvas.addEventListener("touchmove", function(e) { self.handleTouchMove(e); }, false);
      canvas.addEventListener("touchend", function(e) { self.handleTouchEnd(e); }, false);
+     canvas.addEventListener("touchcancel", function(e) { self.handleTouchEnd(e); }, false);
   };
 
   Game.prototype.startGame = function startGame() {
