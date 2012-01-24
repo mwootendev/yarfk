@@ -14,6 +14,13 @@ body {
   color: gray;
 }
 
+.rfk-label {
+  padding-left: 4px;
+  padding-right: 4px;
+  font-weight: bold;
+  height: 14pt;
+}
+
 #nki {
   width: 796px;
   height: 14pt;
@@ -21,14 +28,10 @@ body {
 }
 
 #newGame {
-  margin-top: 5px;
-  padding-left: 4px;
-  font-weight: bold;
-  width: 76px;
-  height: 14pt;
-  cursor: default;
+  cursor: default;  
 }
 
 #display {
   white-space: nowrap;    
+  margin-top: 5px;
 }

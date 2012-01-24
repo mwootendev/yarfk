@@ -18,7 +18,7 @@ var com = com || {};
 com.robotfindskitten = com.robotfindskitten || {};
 
 com.robotfindskitten.NonKittenItemNames = (function(rfk, global) {
-  
+
   var nonKittenItems = [
     "\"I pity the fool who mistakes me for kitten!\", sez Mr. T.",
     "That's just an old tin can.",
@@ -427,173 +427,173 @@ com.robotfindskitten.NonKittenItemNames = (function(rfk, global) {
     "It's an inverted billiard ball!",
     "The spectre of Sherlock Holmes wills you onwards."
   ];
-  
+
   var NonKittenItemNames = function() {};
-  
+
   NonKittenItemNames.prototype = {
     randomItem : function() {
-      return nonKittenItems[Math.floor(Math.random() * nonKittenItems.length)];   
+      return nonKittenItems[Math.floor(Math.random() * nonKittenItems.length)];
     }
   };
-  
+
   return NonKittenItemNames;
-  
+
 })(com.robotfindskitten || {}, this);
 
 com.robotfindskitten.ColorGenerator = (function(rfk, global) {
-    
+
     var COLORS = ["red", "green", "yellow", "blue", "magenta", "cyan"];
     var ColorGenerator;
-    
+
     ColorGenerator = function() {};
-    
+
     ColorGenerator.prototype.randomColor = function randomColor() {
       return COLORS[Math.floor(Math.random() * COLORS.length)];
     };
-    
+
     return ColorGenerator;
-    
+
 })(com.robotfindskitten || {}, this);
 
 com.robotfindskitten.CharacterGenerator = (function(rfk, global) {
-    
+
     var CharacterGenerator;
-    
+
     CharacterGenerator = function() {};
-    
+
     CharacterGenerator.prototype.randomCharacter = function randomCharacter() {
       var exclamationIndex = "!".charCodeAt(0);
-      return String.fromCharCode(Math.floor(Math.random() * 
-        ((126 - exclamationIndex + 1)) + exclamationIndex));    
+      return String.fromCharCode(Math.floor(Math.random() *
+        ((126 - exclamationIndex + 1)) + exclamationIndex));
     };
-    
+
     return CharacterGenerator;
-    
+
 })(com.robotfindskitten || {}, this);
 
 com.robotfindskitten.Screen = (function(rfk, global) {
-    
+
     var FONT_SIZE = 12;
     var BACKGROUND_COLOR = "black";
-    
+
     var Screen = function(canvas) {
       this.canvas = canvas;
-      this.context = canvas.getContext("2d");  
+      this.context = canvas.getContext("2d");
     };
-    
+
     Screen.prototype.drawScreenItem = function drawScreenItem(screenItem) {
       this.context.save();
-    
+
       this.context.font = FONT_SIZE + "pt monospace";
       this.context.textBaseline = "top";
-    
+
       this.context.fillStyle = screenItem.color;
       this.context.fillText(screenItem.character, screenItem.x * FONT_SIZE, screenItem.y * FONT_SIZE);
-    
+
       this.context.restore();
     };
-    
+
     Screen.prototype.clearScreen = function clearScreen() {
       this.context.save();
-    
+
       this.context.fillColor = BACKGROUND_COLOR;
       this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
       this.context.restore();
     };
-    
+
     Screen.prototype.clearScreenItem = function clearScreenItem(screenItem) {
       this.context.save();
-    
+
       this.context.font = FONT_SIZE + "pt monospace";
       this.context.textBaseline = "top";
-    
+
       this.context.fillStyle = BACKGROUND_COLOR;
       this.context.fillText(screenItem.character, screenItem.x * FONT_SIZE, screenItem.y * FONT_SIZE);
-    
+
       this.context.restore();
     };
-    
+
     Screen.prototype.getMaxX = function getMaxX() {
       return (this.canvas.width / FONT_SIZE);
     };
-  
+
     Screen.prototype.getMaxY = function getMaxY() {
-      return (this.canvas.height / FONT_SIZE);  
+      return (this.canvas.height / FONT_SIZE);
     };
-    
+
     Screen.prototype.randomX = function randomX() {
-      return Math.floor(Math.random() * this.getMaxX());    
+      return Math.floor(Math.random() * this.getMaxX());
     };
-  
+
     Screen.prototype.randomY = function randomY() {
       return Math.floor(Math.random() * this.getMaxY());
     };
-    
+
     return Screen;
-    
+
 })(com.robotfindskitten || {}, this);
 
 com.robotfindskitten.Robot = (function(rfk, global) {
-    
+
   var Robot = function(screen) {
-    
+
     this.screen = screen;
-      
+
     this.character = "#";
     this.color = "grey";
     this.x = 0;
     this.y = 0;
   };
-  
+
   Robot.prototype.move = function move(x, y) {
     this.x = x;
     this.y = y;
   };
-  
+
   Robot.prototype.draw = function draw() {
-    this.screen.drawScreenItem(this);  
+    this.screen.drawScreenItem(this);
   };
-  
+
   Robot.prototype.erase = function draw() {
-    this.screen.clearScreenItem(this);  
+    this.screen.clearScreenItem(this);
   };
-    
+
   Robot.prototype.drawGraphic = function drawGraphic(x, y) {
-      
+
     // [-]
     this.screen.drawScreenItem({"character" : "[", "color" : "blue", "x" : x, "y" : y});
     this.screen.drawScreenItem({"character" : "-", "color" : "cyan", "x" : x+1, "y" : y});
     this.screen.drawScreenItem({"character" : "]", "color" : "blue", "x" : x+2, "y" : y});
-      
+
     // (+)=C
     this.screen.drawScreenItem({"character" : "(", "color" : "blue", "x" : x, "y" : y+1});
     this.screen.drawScreenItem({"character" : "+", "color" : "red", "x" : x+1, "y" : y+1});
     this.screen.drawScreenItem({"character" : ")", "color" : "blue", "x" : x+2, "y" : y+1});
     this.screen.drawScreenItem({"character" : "=", "color" : "cyan", "x" : x+3, "y" : y+1});
     this.screen.drawScreenItem({"character" : "C", "color" : "cyan", "x" : x+4, "y" : y+1});
-      
+
     // | |
     this.screen.drawScreenItem({"character" : "|", "color" : "blue", "x" : x, "y" : y+2});
     this.screen.drawScreenItem({"character" : "|", "color" : "blue", "x" : x+2, "y" : y+2});
-      
+
     // OOO
     this.screen.drawScreenItem({"character" : "O", "color" : "gray", "x" : x, "y" : y+3});
     this.screen.drawScreenItem({"character" : "O", "color" : "gray", "x" : x+1, "y" : y+3});
     this.screen.drawScreenItem({"character" : "O", "color" : "gray", "x" : x+2, "y" : y+3});
   };
-      
+
   return Robot;
-    
+
 })(com.robotfindskitten || {}, this);
 
 com.robotfindskitten.Kitten = (function(rfk, global) {
-  
+
   var characterGenerator = new rfk.CharacterGenerator();
   var colorGenerator = new rfk.ColorGenerator();
-  
+
   var Kitten;
-  
+
   Kitten = function(screen, x, y) {
     this.screen = screen;
     this.character = characterGenerator.randomCharacter();
@@ -601,15 +601,15 @@ com.robotfindskitten.Kitten = (function(rfk, global) {
     this.x = x;
     this.y = y;
   };
-  
+
   Kitten.prototype.draw = function draw() {
-    this.screen.drawScreenItem(this);  
+    this.screen.drawScreenItem(this);
   };
-  
+
   Kitten.prototype.erase = function draw() {
-    this.screen.clearScreenItem(this);  
+    this.screen.clearScreenItem(this);
   };
-  
+
   Kitten.prototype.drawGraphic = function drawGraphic(x, y) {
     // |\_/|
     this.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y});
@@ -617,7 +617,7 @@ com.robotfindskitten.Kitten = (function(rfk, global) {
     this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+3, "y" : y});
     this.screen.drawScreenItem({"character" : "/", "color" : "orange", "x" : x+4, "y" : y});
     this.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y});
-      
+
     // |o o|__
     this.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+1, "y" : y+1});
     this.screen.drawScreenItem({"character" : "o", "color" : "green", "x" : x+2, "y" : y+1});
@@ -625,7 +625,7 @@ com.robotfindskitten.Kitten = (function(rfk, global) {
     this.screen.drawScreenItem({"character" : "|", "color" : "orange", "x" : x+5, "y" : y+1});
     this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+1});
     this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+1});
-      
+
     // =-*-=__\
     this.screen.drawScreenItem({"character" : "=", "color" : "white", "x" : x+1, "y" : y+2});
     this.screen.drawScreenItem({"character" : "-", "color" : "white", "x" : x+2, "y" : y+2});
@@ -635,7 +635,7 @@ com.robotfindskitten.Kitten = (function(rfk, global) {
     this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+6, "y" : y+2});
     this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+7, "y" : y+2});
     this.screen.drawScreenItem({"character" : "\\", "color" : "orange", "x" : x+8, "y" : y+2});
-      
+
     // c_c__(___)
     this.screen.drawScreenItem({"character" : "c", "color" : "orange", "x" : x, "y" : y+3});
     this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+1, "y" : y+3});
@@ -648,81 +648,81 @@ com.robotfindskitten.Kitten = (function(rfk, global) {
     this.screen.drawScreenItem({"character" : "_", "color" : "orange", "x" : x+8, "y" : y+3});
     this.screen.drawScreenItem({"character" : ")", "color" : "orange", "x" : x+9, "y" : y+3});
   };
-  
+
   return Kitten;
-  
+
 })(com.robotfindskitten || {}, this);
 
 com.robotfindskitten.NonKittenItems = (function(rfk, global) {
-  
+
   var characterGenerator = new rfk.CharacterGenerator();
   var colorGenerator = new rfk.ColorGenerator();
   var nonKittenItemNames = new rfk.NonKittenItemNames();
-  
+
   var NonKittenItems;
-  
+
   NonKittenItems = function(screen) {
-    this.screen = screen;   
+    this.screen = screen;
     this.nonKittenItems = [];
   }
-  
+
   NonKittenItems.prototype.initialize = function(totalNkiCount) {
-    
+
     this.nonKittenItems.length = 0;
 
     for (var nkiCount = 0; nkiCount < totalNkiCount; nkiCount++)
     {
       var x = this.screen.randomX();
       var y = this.screen.randomY();
-        
+
       if (!this.nonKittenItems[y])
       {
-        this.nonKittenItems[y] = [];    
+        this.nonKittenItems[y] = [];
       }
-      
+
       while (this.nonKittenItems[y] && this.nonKittenItems[y][x])
       {
-        x = this.screen.randomX();   
+        x = this.screen.randomX();
       }
-           
-      this.nonKittenItems[y][x] = { "character" : characterGenerator.randomCharacter(), 
-                                    "color" : colorGenerator.randomColor(), 
-                                    "x" : x, 
+
+      this.nonKittenItems[y][x] = { "character" : characterGenerator.randomCharacter(),
+                                    "color" : colorGenerator.randomColor(),
+                                    "x" : x,
                                     "y" : y,
                                     "text" : nonKittenItemNames.randomItem()};
-    }  
+    }
   };
-  
+
   NonKittenItems.prototype.draw = function draw() {
-    
+
     for (var y in this.nonKittenItems) {
-      
+
       for (var x in this.nonKittenItems[y]) {
-        this.screen.drawScreenItem(this.nonKittenItems[y][x]);  
+        this.screen.drawScreenItem(this.nonKittenItems[y][x]);
       }
     }
   };
-  
+
   NonKittenItems.prototype.isNkiAtLocation = function isNkiAtLocation(x, y) {
     return ((this.nonKittenItems[y]) !== undefined && (this.nonKittenItems[y][x] !== undefined));
   };
-  
+
   NonKittenItems.prototype.getNkiAtLocation = function getNkiAtLocation(x, y) {
-    return this.nonKittenItems[y][x];    
+    return this.nonKittenItems[y][x];
   };
-  
+
   return NonKittenItems;
-  
+
 })(com.robotfindskitten || {}, this);
 
 com.robotfindskitten.Heart = (function(rfk, global) {
 
   var Heart;
-  
+
   Heart = function(screen) {
-    this.screen = screen;  
+    this.screen = screen;
   };
-  
+
   Heart.prototype.drawGraphic = function drawGraphic(x, y) {
     // .::. .::.
     this.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x, "y" : y});
@@ -733,19 +733,19 @@ com.robotfindskitten.Heart = (function(rfk, global) {
     this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+6, "y" : y});
     this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+7, "y" : y});
     this.screen.drawScreenItem({"character" : ".", "color" : "red", "x" : x+8, "y" : y});
-    
+
     // :::::::::
     for (var offset = 0; offset < 9; offset++) {
-      this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+1});   
+      this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+1});
     }
-    
+
     // ':::::::'
     this.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x, "y" : y+2});
     for (offset = 1; offset < 7; offset++) {
-      this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+2});   
+      this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x + offset, "y" : y+2});
     }
     this.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x + 7, "y" : y+2});
-    
+
     //   ':::'
     this.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x+2, "y" : y+3});
     this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+3, "y" : y+3});
@@ -753,7 +753,7 @@ com.robotfindskitten.Heart = (function(rfk, global) {
     this.screen.drawScreenItem({"character" : ":", "color" : "red", "x" : x+5, "y" : y+3});
     this.screen.drawScreenItem({"character" : "'", "color" : "red", "x" : x+6, "y" : y+3});
   };
-  
+
   return Heart;
 
 })(com.robotfindskitten || {}, this);
@@ -761,13 +761,13 @@ com.robotfindskitten.Heart = (function(rfk, global) {
 com.robotfindskitten.Game = (function(rfk, global) {
 
   var NKI_COUNT = 20;
-  
+
   var Game;
-      
+
   Game = function init(canvas, nkiElement) {
      this.screen = new rfk.Screen(canvas);
      this.nkiElement = nkiElement;
-          
+
      this.robot = new rfk.Robot(this.screen);
      this.nkis = new rfk.NonKittenItems(this.screen);
      this.heart = new rfk.Heart(this.screen);
@@ -776,99 +776,110 @@ com.robotfindskitten.Game = (function(rfk, global) {
      this.kittenFoundListeners = [];
 
      var self = this;
-     
+
      global.addEventListener("keyup", function(e) { self.handleKeyup(e); }, true);
      global.addEventListener("keydown", function(e) { self.handleKeydown(e); }, true);
   };
-  
+
   Game.prototype.startGame = function startGame() {
      this.screen.clearScreen();
      this.nkis.initialize(NKI_COUNT);
      this.nkis.draw();
-     
+
      this.initializeRobotLocation();
      this.robot.draw();
-     
+
      this.initializeKitten();
-     this.kitten.draw();     
-     
+     this.kitten.draw();
+
      for (var i = 0; i < this.startGameListeners.length; i++) {
        this.startGameListeners[i]();
      }
   };
-  
+
   Game.prototype.addStartGameListener = function addStartGameListener(startGameListener) {
     if (startGameListener && (typeof(startGameListener) === "function")) {
-      this.startGameListeners.push(startGameListener);  
+      this.startGameListeners.push(startGameListener);
     }
   };
-  
+
+  Game.prototype.addKittenFoundListener = function addKittenFoundListener(kittenFoundListener) {
+    if (kittenFoundListener && (typeof(kittenFoundListener) === "function")) {
+      this.kittenFoundListeners.push(kittenFoundListener);
+    }
+  };
+
   Game.prototype.initializeRobotLocation = function initializeRobotLocation() {
     var x = this.screen.randomX();
     var y = this.screen.randomY();
-    
+
     while (this.nkis.isNkiAtLocation(x, y))
     {
         x = this.screen.randomX();
         y = this.screen.randomY();
     }
-    
+
     this.robot.move(x, y);
   };
-  
+
   Game.prototype.initializeKitten = function initializeKitten() {
     var x = this.screen.randomX();
     var y = this.screen.randomY();
 
-    while (this.nkis.isNkiAtLocation(x, y) || 
+    while (this.nkis.isNkiAtLocation(x, y) ||
            (this.robot.x === x && this.robot.y === y))
     {
       x = this.screen.randomX();
       y = this.screen.randomY();
     }
-    
+
     this.kitten = new rfk.Kitten(this.screen, x, y);
   };
-   
+
   Game.prototype.displayNki = function displayNki(nki, color) {
     this.nkiElement.innerHTML = nki;
     color = color || "white";
-    this.nkiElement.style.color = color;    
+    this.nkiElement.style.color = color;
   };
- 
+
   Game.prototype.handleKeydown = function handleKeydown(event) {
+
+    if (this.animating) {
+      return;
+    }
+
     switch (event.keyCode) {
       case 38:  // Up arrow
         this.moveRobot(0, -1);
         break;
-   
+
       case 40:  // Down arrow
         this.moveRobot(0, 1);
         break;
-  
+
       case 37:  // Left arrow
         this.moveRobot(-1, 0);
         break;
-  
+
       case 39:  // Right arrow
         this.moveRobot(1, 0);
         break;
-    }  
+    }
   };
-  
+
   Game.prototype.handleKeyup = function handleKeyup(event) {
-    if (event.keyCode === 27) {
+    if (event.keyCode === 27 && !this.animating) {
         this.startGame();
-    }  
+    }
   };
-    
+
   Game.prototype.moveRobot = function moveRobot(deltaX, deltaY) {
     var newRobotX = this.robot.x + deltaX;
     var newRobotY = this.robot.y + deltaY;
-    
-    if (((newRobotX >= 0) && (newRobotX <= this.screen.getMaxX())) && 
+
+    if (((newRobotX >= 0) && (newRobotX <= this.screen.getMaxX())) &&
        ((newRobotY >= 0) && (newRobotY < this.screen.getMaxY())))
-    {      
+    {
       if (this.nkis.isNkiAtLocation(newRobotX, newRobotY))
       {
         var nki = this.nkis.getNkiAtLocation(newRobotX, newRobotY);
@@ -876,8 +887,7 @@ com.robotfindskitten.Game = (function(rfk, global) {
       }
       else if ((this.kitten.x === newRobotX) && (this.kitten.y === newRobotY))
       {
-          this.displayNki("You found kitten!!!!!  [Press ESC to play again]");
-          this.playAnimation(0);
+          this.foundKitten();
       }
       else
       {
@@ -887,22 +897,37 @@ com.robotfindskitten.Game = (function(rfk, global) {
       }
     }
   };
-  
+
+  Game.prototype.foundKitten = function foundKitten() {
+    this.displayNki("You found kitten!!!!!  [Press ESC to play again]");
+
+    for (var i = 0; i < this.kittenFoundListeners.length; i++) {
+      this.kittenFoundListeners[i]();
+    }
+
+    this.playAnimation(0);
+  };
+
   Game.prototype.playAnimation = function playAnimation(offset) {
     if (offset !== 15) {
+      this.animating = true;
       this.screen.clearScreen();
-        
+
       var top = (this.screen.getMaxY() / 2) - 2;
       var self = this;
-      
+
       this.robot.drawGraphic(6 + offset, top);
       this.heart.drawGraphic(this.screen.getMaxX() / 2 - 6, top);
       this.kitten.drawGraphic(this.screen.getMaxX() - 15 - offset, top);
-           
+
       setTimeout(function() { self.playAnimation(offset + 1); }, 250);
     }
+    else
+    {
+      this.animating = false;
+    }
   };
-  
+
   return Game;
 
 })(com.robotfindskitten || {}, this);

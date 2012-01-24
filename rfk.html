@@ -21,13 +21,22 @@
     <script src="rfk.js"></script>
     <script type="text/javascript">
       var gamesPlayed = 0;
+      var kittensFound = 0;
+      
       $(document).ready(function () {
+      
         var rfk = new com.robotfindskitten.Game($("#rfk").get(0), $("#nki").get(0));   
-        rfk.startGame(); 
+        
         rfk.addStartGameListener(function() { 
           gamesPlayed += 1;
           $("#gamesPlayed").html("Games Played: " + gamesPlayed);
         });
+        rfk.addKittenFoundListener(function() {
+          kittensFound += 1;
+          $("#kittensFound").html("Kittens Found: " + kittensFound);
+        });
+        rfk.startGame(); 
+                
         $("#newGame").on('click', function() { rfk.startGame(); });
       });
     </script>
@@ -47,8 +56,9 @@
     </canvas>
     <div id="nki" class="rfk-border rfk-text"></div>
     <div id="display">
-      <span id="newGame" class="rfk-border rfk-text">New Game</span>
-      <span id="gamesPlayed" class="rfk-border rfk-text">Games Played: 0</span>
+      <span id="newGame" class="rfk-border rfk-text rfk-label">New Game</span>
+      <span id="gamesPlayed" class="rfk-border rfk-text rfk-label">Games Played: 0</span>
+      <span id="kittensFound" class="rfk-border rfk-text rfk-label">Kittens Found: 0</span>
     </div>
   </body>
 </html>
