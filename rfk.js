@@ -779,6 +779,10 @@ com.robotfindskitten.Game = (function(rfk, global) {
 
      global.addEventListener("keyup", function(e) { self.handleKeyup(e); }, true);
      global.addEventListener("keydown", function(e) { self.handleKeydown(e); }, true);
+
+     canvas.addEventListener("touchstart", function(e) { self.handleTouchStart(e); }, false);
+     canvas.addEventListener("touchmove", function(e) { self.handleTouchMove(e); }, false);
+     canvas.addEventListener("touchend", function(e) { self.handleTouchEnd(e); }, false);
   };
 
   Game.prototype.startGame = function startGame() {
@@ -870,6 +874,49 @@ com.robotfindskitten.Game = (function(rfk, global) {
   Game.prototype.handleKeyup = function handleKeyup(event) {
     if (event.keyCode === 27 && !this.animating) {
         this.startGame();
+    }
+  };
+
+  Game.prototype.handleTouchStart = function handleTouchStart(event) {
+    event.preventDefault();
+    if (event.targetTouches.length === 1)
+    {
+      this.firstTouch = event.targetTouches[0];
+    }
+  };
+
+  Game.prototype.handleTouchMove = function handleTouchMove(event) {
+    event.preventDefault();
+    if (event.targetTouches.length === 1)
+    {
+      this.lastTouch = event.targetTouches[0];
+    }
+  };
+
+  Game.prototype.handleTouchEnd = function handleTouchEnd(event) {
+    event.preventDefault();
+
+    var MIN_TRAVEL_DISTANCE = 10;
+
+    var diffX = this.lastTouch.pageX - this.firstTouch.pageX;
+    var diffY = this.lastTouch.pageY - this.firstTouch.pageY;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > MIN_TRAVEL_DISTANCE) {
+        this.moveRobot(1, 0);
+      }
+      else if (diffX < -MIN_TRAVEL_DISTANCE) {
+        this.moveRobot(-1, 0);
+      }
+    }
+    else
+    {
+      if (diffY > MIN_TRAVEL_DISTANCE) {
+        this.moveRobot(0, 1);
+      }
+      else if (diffY < -MIN_TRAVEL_DISTANCE) {
+        this.moveRobot(0, -1);
+      }
     }
   };
 
