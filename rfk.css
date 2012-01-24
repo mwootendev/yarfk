@@ -1,37 +1,37 @@
 body {
-  background : black;    
+  background : black;
 }
 
 .rfk-border {
   border-width: 1px;
   border-color: gray;
-  border-style: solid;    
+  border-style: solid;
 }
 
 .rfk-text {
   font-family: Courier, Monospace;
-  font-size: 10pt;
+  font-size: 1em;
   color: gray;
 }
 
 .rfk-label {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
   font-weight: bold;
-  height: 14pt;
+  height: 1.2em;
 }
 
 #nki {
-  width: 796px;
-  height: 14pt;
-  padding-left: 4px;
+  width: 798px;
+  height: 1.2em;
+  padding-left: 0.2em;
 }
 
 #newGame {
-  cursor: default;  
+  cursor: default;
 }
 
 #display {
-  white-space: nowrap;    
-  margin-top: 5px;
+  white-space: nowrap;
+  margin-top: 0.5em;
 }

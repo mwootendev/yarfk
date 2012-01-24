@@ -484,7 +484,7 @@ com.robotfindskitten.Screen = (function(rfk, global) {
     Screen.prototype.drawScreenItem = function drawScreenItem(screenItem) {
       this.context.save();
 
-      this.context.font = FONT_SIZE + "pt monospace";
+      this.context.font = FONT_SIZE + "px Courier, Monospace";
       this.context.textBaseline = "top";
 
       this.context.fillStyle = screenItem.color;
@@ -505,7 +505,7 @@ com.robotfindskitten.Screen = (function(rfk, global) {
     Screen.prototype.clearScreenItem = function clearScreenItem(screenItem) {
       this.context.save();
 
-      this.context.font = FONT_SIZE + "pt monospace";
+      this.context.font = FONT_SIZE + "px Courier, Monospace";
       this.context.textBaseline = "top";
 
       this.context.fillStyle = BACKGROUND_COLOR;
@@ -519,7 +519,7 @@ com.robotfindskitten.Screen = (function(rfk, global) {
     };
 
     Screen.prototype.getMaxY = function getMaxY() {
-      return (this.canvas.height / FONT_SIZE);
+      return (this.canvas.height / FONT_SIZE) - 1;
     };
 
     Screen.prototype.randomX = function randomX() {
