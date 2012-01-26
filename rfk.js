@@ -800,8 +800,8 @@ com.robotfindskitten.Game = (function(rfk, global) {
 
      var self = this;
 
-     global.addEventListener("keyup", function(e) { self.handleKeyup(e); }, true);
-     global.addEventListener("keydown", function(e) { self.handleKeydown(e); }, true);
+     global.addEventListener("keyup", function(e) { self.handleKeyup(e); }, false);
+     global.addEventListener("keydown", function(e) { self.handleKeydown(e); }, false);
 
      canvas.addEventListener("touchstart", function(e) { self.handleTouchStart(e); }, false);
      canvas.addEventListener("touchmove", function(e) { self.handleTouchMove(e); }, false);
@@ -878,18 +878,22 @@ com.robotfindskitten.Game = (function(rfk, global) {
 
     switch (event.keyCode) {
       case 38:  // Up arrow
+      case 87:  // W
         this.moveRobot(0, -1);
         break;
 
       case 40:  // Down arrow
+      case 83:  // S
         this.moveRobot(0, 1);
         break;
 
       case 37:  // Left arrow
+      case 65:  // A
         this.moveRobot(-1, 0);
         break;
 
       case 39:  // Right arrow
+      case 68:  // D
         this.moveRobot(1, 0);
         break;
     }
