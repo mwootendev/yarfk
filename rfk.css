@@ -21,10 +21,15 @@ body {
   height: 1.2em;
 }
 
+#title {
+  font-size: 0.8em;
+}
+
 #nki {
   width: 798px;
-  height: 1.2em;
+  height: 2.2em;
   padding-left: 0.2em;
+  margin-top: 0.3em;
 }
 
 #newGame {
@@ -33,5 +38,5 @@ body {
 
 #display {
   white-space: nowrap;
-  margin-top: 0.5em;
+  margin-top: 0.3em;
 }

@@ -473,22 +473,46 @@ com.robotfindskitten.CharacterGenerator = (function(rfk, global) {
 
 com.robotfindskitten.Screen = (function(rfk, global) {
 
-    var FONT_SIZE = 12;
     var BACKGROUND_COLOR = "black";
 
     var Screen = function(canvas) {
       this.canvas = canvas;
       this.context = canvas.getContext("2d");
+
+      this.context.font = "1em Courier, Monospace";
+      this.context.textBaseline = "top";
+
+      this.fontWidth = this.context.measureText("M").width;
+      this.fontHeight = this.calculateHeight();
+    };
+
+    Screen.prototype.calculateHeight = function calculateHeight() {
+      var heightElement = document.createElement("span");
+      heightElement.style.fontFamily = "Courier, Monospace";
+      heightElement.style.fontSize = "1em";
+      heightElement.style.position = "absolute";
+      heightElement.style.visibility = "hidden";
+
+      heightElement.appendChild(document.createTextNode("M"));
+
+      var body = document.getElementsByTagName("body")[0];
+
+      body.appendChild(heightElement);
+
+      var height = heightElement.offsetHeight;
+
+      body.removeChild(heightElement);
+
+      return height;
     };
 
     Screen.prototype.drawScreenItem = function drawScreenItem(screenItem) {
       this.context.save();
 
-      this.context.font = FONT_SIZE + "px Courier, Monospace";
-      this.context.textBaseline = "top";
-
       this.context.fillStyle = screenItem.color;
-      this.context.fillText(screenItem.character, screenItem.x * FONT_SIZE, screenItem.y * FONT_SIZE);
+      this.context.fillText(screenItem.character,
+        screenItem.x * this.fontWidth,
+        screenItem.y * this.fontHeight);
 
       this.context.restore();
     };
@@ -505,21 +529,20 @@ com.robotfindskitten.Screen = (function(rfk, global) {
     Screen.prototype.clearScreenItem = function clearScreenItem(screenItem) {
       this.context.save();
 
-      this.context.font = FONT_SIZE + "px Courier, Monospace";
-      this.context.textBaseline = "top";
-
       this.context.fillStyle = BACKGROUND_COLOR;
-      this.context.fillText(screenItem.character, screenItem.x * FONT_SIZE, screenItem.y * FONT_SIZE);
+      this.context.fillText(screenItem.character,
+        screenItem.x * this.fontWidth,
+        screenItem.y * this.fontHeight);
 
       this.context.restore();
     };
 
     Screen.prototype.getMaxX = function getMaxX() {
-      return (this.canvas.width / FONT_SIZE);
+      return (this.canvas.width / this.fontWidth) - 1;
     };
 
     Screen.prototype.getMaxY = function getMaxY() {
-      return (this.canvas.height / FONT_SIZE) - 1;
+      return (this.canvas.height / this.fontHeight) - 1;
     };
 
     Screen.prototype.randomX = function randomX() {

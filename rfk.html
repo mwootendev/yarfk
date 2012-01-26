@@ -22,12 +22,12 @@
     <script type="text/javascript">
       var gamesPlayed = 0;
       var kittensFound = 0;
-      
+
       $(document).ready(function () {
-      
-        var rfk = new com.robotfindskitten.Game($("#rfk").get(0), $("#nki").get(0));   
-        
-        rfk.addStartGameListener(function() { 
+
+        var rfk = new com.robotfindskitten.Game($("#rfk").get(0), $("#nki").get(0));
+
+        rfk.addStartGameListener(function() {
           gamesPlayed += 1;
           $("#gamesPlayed").html("Games Played: " + gamesPlayed);
         });
@@ -35,8 +35,8 @@
           kittensFound += 1;
           $("#kittensFound").html("Kittens Found: " + kittensFound);
         });
-        rfk.startGame(); 
-                
+        rfk.startGame();
+
         $("#newGame").on('click', function() { rfk.startGame(); });
       });
     </script>
