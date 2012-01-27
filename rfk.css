@@ -45,3 +45,15 @@ body {
   white-space: nowrap;
   margin-top: 0.3em;
 }
+
+#credits {
+  margin-top: 0.3em;
+  width: 800px;
+  border-width: 1px;
+  border-color: gray;
+  border-top: 1px solid gray;
+}
+
+#credits a {
+  color: white;
+}
