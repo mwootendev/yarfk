@@ -34,6 +34,7 @@ body {
 
 #newGame {
   cursor: default;
+  color: white;
 }
 
 #instructions {
