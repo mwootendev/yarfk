@@ -907,28 +907,28 @@ com.robotfindskitten.Game = (function(rfk, global) {
   };
 
   Game.prototype.handleTouchStart = function handleTouchStart(event) {
-    event.preventDefault();
     if (event.touches.length === 1)
     {
-      this.firstTouch = event.touches[0];
+      this.firstX = event.touches[0].pageX;
+      this.firstY = event.touches[0].pageY;
     }
   };
 
   Game.prototype.handleTouchMove = function handleTouchMove(event) {
-    event.preventDefault();
-    if (event.touches.length === 1)
+    if (event.changedTouches.length === 1)
     {
-      this.lastTouch = event.touches[0];
+      this.lastX = event.changedTouches[0].pageX;
+      this.lastY = event.changedTouches[0].pageY;
+      event.preventDefault();
     }
   };
 
   Game.prototype.handleTouchEnd = function handleTouchEnd(event) {
-    event.preventDefault();
 
     var MIN_TRAVEL_DISTANCE = 10;
 
-    var diffX = this.lastTouch.pageX - this.firstTouch.pageX;
-    var diffY = this.lastTouch.pageY - this.firstTouch.pageY;
+    var diffX = this.lastX - this.firstX;
+    var diffY = this.lastY - this.firstY;
 
     if (Math.abs(diffX) > Math.abs(diffY)) {
       if (diffX > MIN_TRAVEL_DISTANCE) {
