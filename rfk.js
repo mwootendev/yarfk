@@ -529,10 +529,11 @@ com.robotfindskitten.Screen = (function(rfk, global) {
     Screen.prototype.clearScreenItem = function clearScreenItem(screenItem) {
       this.context.save();
 
-      this.context.fillStyle = BACKGROUND_COLOR;
-      this.context.fillText(screenItem.character,
-        screenItem.x * this.fontWidth,
-        screenItem.y * this.fontHeight);
+      this.context.fillColor = BACKGROUND_COLOR;
+      this.context.fillRect(screenItem.x * this.fontWidth,
+                            screenItem.y * this.fontHeight,
+                            this.fontWidth,
+                            this.fontHeight);
 
       this.context.restore();
     };
