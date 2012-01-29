@@ -30,19 +30,30 @@
 
       $(document).ready(function () {
 
-        var rfk = new com.robotfindskitten.Game($("#rfk").get(0), $("#nki").get(0));
+        var canvas = $("#rfk").get(0);
+        var contextAvailable = canvas.getContext("2d");
 
-        rfk.addStartGameListener(function() {
-          gamesPlayed += 1;
-          $("#gamesPlayed").html("Games Played: " + gamesPlayed);
-        });
-        rfk.addKittenFoundListener(function() {
-          kittensFound += 1;
-          $("#kittensFound").html("Kittens Found: " + kittensFound);
-        });
-        rfk.startGame();
+        if (contextAvailable) {
+          var rfk = new com.robotfindskitten.Game(canvas, $("#nki").get(0));
 
-        $("#newGame").on('click', function() { rfk.startGame(); });
+          rfk.addStartGameListener(function() {
+            gamesPlayed += 1;
+            $("#gamesPlayed").html("Games Played: " + gamesPlayed);
+          });
+          rfk.addKittenFoundListener(function() {
+            kittensFound += 1;
+            $("#kittensFound").html("Kittens Found: " + kittensFound);
+          });
+          rfk.startGame();
+
+          $("#newGame").on('click', function() { rfk.startGame(); });
+        }
+        else {
+          $("#rfk").get(0).hide();
+          $("#nki").get(0).hide();
+          $("#display").get(0).hide();
+          $("#notSupported").get(0).show();
+        }
       });
     </script>
     <link rel="stylesheet" href="rfk.css" type="text/css" />
@@ -60,6 +71,16 @@
       I'm sorry, but your browser is not worthy of finding kitten.
     </canvas>
     <div id="nki" class="rfk-border rfk-text"></div>
+    <div id="notSupported" style="display: none">
+      I'm sorry, but your browser is not worthy of finding kitten.
+      Please upgrade to a modern, robotfindskitten supported browser.
+      <br />
+      <ul>
+        <li><a href="http://www.google.com/chrome">Chrome</a></li>
+        <li><a href="http://www.firefox.com">Firefox</a></li>
+        <li><a href="http://www.apple.com/safari">Safari</a></li>
+      </ul>
+    </div>
     <div id="display">
       <span id="newGame" class="rfk-border rfk-text rfk-label">New Game</span>
       <span id="gamesPlayed" class="rfk-border rfk-text rfk-label">Games Played: 0</span>
