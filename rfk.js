@@ -975,7 +975,7 @@ com.robotfindskitten.Game = (function(rfk, global) {
   };
 
   Game.prototype.foundKitten = function foundKitten() {
-    this.displayNki("You found kitten!!!!!  [Press ESC to play again]");
+    this.displayNki("You found kitten!!!!! Press [ESC] or 'New Game' to play again.");
 
     for (var i = 0; i < this.kittenFoundListeners.length; i++) {
       this.kittenFoundListeners[i]();
