@@ -18,6 +18,10 @@ body {
   background : black;
 }
 
+a {
+  color: white;
+}
+
 .rfk-border {
   border-width: 1px;
   border-color: gray;
@@ -69,8 +73,4 @@ body {
   border-width: 1px;
   border-color: gray;
   border-top: 1px solid gray;
-}
-
-#credits a {
-  color: white;
 }
