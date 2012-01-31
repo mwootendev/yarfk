@@ -49,8 +49,9 @@
           $("#newGame").on('click', function() { rfk.startGame(); });
         }
         else {
-          $("#nki").get(0).hide();
-          $("#display").get(0).hide();
+          $("#nki").hide();
+          $("#display").hide();
+          $("#instructions").hide();
         }
       });
     </script>
@@ -66,14 +67,16 @@
                                                                            </nobr>
     </div>
     <canvas id="rfk" class="rfk-border rfk-text" width="800" height="600">
-      I'm sorry, but your browser is not worthy of finding kitten.
-      Please upgrade to a modern, robotfindskitten supported browser.
-      <br />
-      <ul>
-        <li><a href="http://www.google.com/chrome" target="_blank">Chrome</a></li>
-        <li><a href="http://www.firefox.com" target="_blank">Firefox</a></li>
-        <li><a href="http://www.apple.com/safari" target="_blank">Safari</a></li>
-      </ul>
+      <div id="notSupported" class="rfk-text">
+        I'm sorry, but your browser is not worthy of finding kitten.
+        Please upgrade to a modern, robotfindskitten supported browser.
+        <br />
+        <ul>
+          <li><a href="http://www.google.com/chrome" target="_blank">Chrome</a></li>
+          <li><a href="http://www.firefox.com" target="_blank">Firefox</a></li>
+          <li><a href="http://www.apple.com/safari" target="_blank">Safari</a></li>
+        </ul>
+      </div>
     </canvas>
     <div id="nki" class="rfk-border rfk-text"></div>
     <div id="display">
