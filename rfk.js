@@ -881,21 +881,25 @@ com.robotfindskitten.Game = (function(rfk, global) {
       case 38:  // Up arrow
       case 87:  // W
         this.moveRobot(0, -1);
+        event.preventDefault();
         break;
 
       case 40:  // Down arrow
       case 83:  // S
         this.moveRobot(0, 1);
+        event.preventDefault();
         break;
 
       case 37:  // Left arrow
       case 65:  // A
         this.moveRobot(-1, 0);
+        event.preventDefault();
         break;
 
       case 39:  // Right arrow
       case 68:  // D
         this.moveRobot(1, 0);
+        event.preventDefault();
         break;
     }
   };
