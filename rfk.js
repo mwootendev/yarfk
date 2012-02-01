@@ -880,24 +880,28 @@ com.robotfindskitten.Game = (function(rfk, global) {
     switch (event.keyCode) {
       case 38:  // Up arrow
       case 87:  // W
+      case 75:  // K (vi)
         this.moveRobot(0, -1);
         event.preventDefault();
         break;
 
       case 40:  // Down arrow
       case 83:  // S
+      case 74:  // J (vi)
         this.moveRobot(0, 1);
         event.preventDefault();
         break;
 
       case 37:  // Left arrow
       case 65:  // A
+      case 72:  // H (vi)
         this.moveRobot(-1, 0);
         event.preventDefault();
         break;
 
       case 39:  // Right arrow
       case 68:  // D
+      case 76:  // L (vi)
         this.moveRobot(1, 0);
         event.preventDefault();
         break;
